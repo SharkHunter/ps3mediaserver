@@ -31,7 +31,7 @@
 	<artifactId>pms</artifactId>
 	<name>PS3 Media Server-SHB</name>
 	<packaging>jar</packaging>
-	<version>1.50.1_SHB34-SNAPSHOT</version>
+	<version>(SharkHunterBuild) 1.50.1 - SHB35a</version>
 	<url>http://www.ps3mediaserver.org/</url>
 	<inceptionYear>2008</inceptionYear>
 	
@@ -80,10 +80,11 @@
 		<slf4j-version>1.6.3</slf4j-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.external-resources>${project.basedir}/src/main/external-resources</project.external-resources>
-		<project.binaries>${project.basedir}/target/bin</project.binaries>
+		<project.binaries>${project.basedir}\target\bin</project.binaries>
 		
 		<!-- Snapshots should get their binaries from the trunk, releases from a tag -->
-		<project.binaries-base>http://ps3mediaserver.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base>
+		<!-- <project.binaries-base>http://ps3mediaserver.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base> -->
+		<project.binaries-base>http://sharkhunter-shb.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base>
 		<!-- <project.binaries-base>http://ps3mediaserver.googlecode.com/svn/tags/1.40.0</project.binaries-base> -->
 		
 		<maven.nsis.project.template>${project.basedir}/src/main/external-resources/nsis/project.jelly</maven.nsis.project.template>
@@ -388,10 +389,22 @@
 					to reference "/resource.name" rather than "/resources/resource.name"
 				-->
 				<targetPath>resources</targetPath>
+				<excludes>
+					<exclude>project.properties</exclude>
+				</excludes>
 
 				<!-- Enable the use of Maven properties -->
-				<filtering>true</filtering>
+				<filtering>false</filtering>
 			</resource>
+			 <resource>
+				<directory>src/main/resources</directory>
+				<targetPath>resources</targetPath>
+				<includes>
+					<include>project.properties</include>
+				</includes>
+				<!-- Filter to replace Maven properties -->
+				<filtering>true</filtering>
+			 </resource>
 
 			<!--
 				There are (or were) reportedly issues with Eclipse's "Externalize Strings" 
@@ -864,6 +877,8 @@
 										<mkdir dir="${project.binaries}/win32/fonts" />
 										<mkdir dir="${project.binaries}/win32/mplayer" />
 										<mkdir dir="${project.binaries}/win32/service" />
+										<mkdir dir="${project.binaries}/extras" />
+										<mkdir dir="${project.binaries}/extras/bin" />
 
 										<!-- Download all necessary Windows binaries. Keep the same structure because NSIS expects it that way. -->
 										<get src="${project.binaries-base}/MediaInfo.dll" dest="${project.binaries}/MediaInfo.dll"  usetimestamp="true" />
@@ -942,6 +957,13 @@
 										<get src="${project.binaries-base}/win32/service/wrapper.dll" dest="${project.binaries}/win32/service/wrapper.dll" usetimestamp="true" />
 										<get src="${project.binaries-base}/win32/service/wrapper.exe" dest="${project.binaries}/win32/service/wrapper.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/win32/service/wrapper.jar" dest="${project.binaries}/win32/service/wrapper.jar" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/rtmpdump.exe" dest="${project.binaries}/extras/bin/rtmpdump.exe" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/curl.exe" dest="${project.binaries}/extras/bin/curl.exe" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/youtube-dl.exe" dest="${project.binaries}/extras/bin/youtube-dl.exe" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/libeay32.dll" dest="${project.binaries}/extras/bin/libeay32.dll" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/libssh2.dll" dest="${project.binaries}/extras/bin/libssh2.dll" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/libz-1.dll" dest="${project.binaries}/extras/bin/libz-1.dll" usetimestamp="true" />
+										<get src="${project.binaries-base}/extras/bin/ssleay32.dll" dest="${project.binaries}/extras/bin/ssleay32.dll" usetimestamp="true" />
 									</tasks>
 								</configuration>
 							</execution>
