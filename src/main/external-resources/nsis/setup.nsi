@@ -36,10 +36,15 @@ SetCompressorDictSize 32
 !insertmacro MUI_PAGE_DIRECTORY
 Page custom SetMem SetMemLeave ;Custom page
 !insertmacro MUI_PAGE_INSTFILES
+
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_LANGUAGE "English"
+
+; Defins for perl
+!define PERL_URL "http://downloads.activestate.com/ActivePerl/releases/5.14.2.1402/ActivePerl-5.14.2.1402-MSWin32-x86-295342.msi"
+
 
 ShowUninstDetails show
 
@@ -60,7 +65,7 @@ Function SetMem
 
 	${NSD_CreateText} 50% 0 50% 12u "768"
 	Pop $Text
-	
+
 	nsDialogs::Show
 FunctionEnd
 
@@ -79,14 +84,21 @@ Section "Program Files"
   File /r /x "*.conf" /x "*.zip" /x "*.dll" /x "third-party" "${PROJECT_BASEDIR}\src\main\external-resources\plugins"
   File /r "${PROJECT_BASEDIR}\src\main\external-resources\documentation"
   File /r "${PROJECT_BASEDIR}\src\main\external-resources\renderers"
-  File /r "${PROJECT_BINARIES}\win32"
-  File /r "${PROJECT_BINARIES}\plugins"
-  File /r "${PROJECT_BINARIES}\extras"
+  File /r "${PROJECT_BASEDIR}\src\main\external-resources\extras"
+  ;File /r "${PROJECT_BINARIES}\win32"
+  ;File /r "${PROJECT_BINARIES}\plugins"
+  ;File /r "${PROJECT_BINARIES}\extras\bin"
+  File /r "${PROJECT_BASEDIR}\target\bin\win32"
+  File /r "${PROJECT_BASEDIR}\target\bin\"
   File "${PROJECT_BUILD_DIR}\PMS.exe"
   File "${PROJECT_BASEDIR}\src\main\external-resources\PMS.bat"
+  File "${PROJECT_BASEDIR}\src\main\external-resources\PMS.conf.new"
+  File "${PROJECT_BASEDIR}\src\main\external-resources\PMS.cred.new"
   File "${PROJECT_BUILD_DIR}\pms.jar"
-  File "${PROJECT_BINARIES}\MediaInfo.dll"
-  File "${PROJECT_BINARIES}\MediaInfo64.dll"
+  ;File "${PROJECT_BINARIES}\MediaInfo.dll"
+  ;File "${PROJECT_BINARIES}\MediaInfo64.dll"
+  File /r "${PROJECT_BASEDIR}\target\bin\MediaInfo.dll"
+  File /r "${PROJECT_BASEDIR}\target\bin\MediaInfo64.dll"
   File "${PROJECT_BASEDIR}\CHANGELOG"
   File "${PROJECT_BASEDIR}\README.md"
   File "${PROJECT_BASEDIR}\LICENSE.txt"
@@ -122,8 +134,8 @@ Section "Program Files"
   ReadENVStr $R0 ALLUSERSPROFILE
   SetOutPath "$R0\PMS-SHB"
   AccessControl::GrantOnFile "$R0\PMS-SHB" "(S-1-5-32-545)" "FullAccess"
-  File "PMS.conf.new"
-  File "PMS.cred.new"
+  ;File "${PROJECT_BASEDIR}\src\main\external-resources\PMS.conf.new"
+  ;File "${PROJECT_BASEDIR}\src\main\external-resources\PMS.cred.new"
   ; Append all PATHs to PMS.conf.new
   ;${WordReplace} "$INSTDIR\extras" "\" "\\" "+" $R0
   ${WordReplace} "extras" "\" "\\" "+" $R0

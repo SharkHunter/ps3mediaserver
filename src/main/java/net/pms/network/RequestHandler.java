@@ -236,7 +236,7 @@ public class RequestHandler implements Runnable {
 						String id = arg.substring(arg.indexOf("0$"), arg.lastIndexOf("/"));
 						id = id.replace("%24", "$"); // popcorn hour ?
 						String name=arg.substring(arg.lastIndexOf("/")+1);
-						DLNAResource res=PMS.get().getRootFolder(request.getMediaRenderer()).search(id,1,request.getMediaRenderer());
+						DLNAResource res=PMS.get().getRootFolder(request.getMediaRenderer()).search(id,1,request.getMediaRenderer(),null);
 						if(res!=null) {
 							OutputStream out=res.upload(name);
 						if(out!=null) {

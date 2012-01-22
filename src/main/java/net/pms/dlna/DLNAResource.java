@@ -458,8 +458,8 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 			setDefaultRenderer(getParent().getDefaultRenderer());
 		}
 		
-		if(defaultRenderer!=null)
-			defaultRenderer.addFolderLimit(child);
+	/*	if(defaultRenderer!=null)
+			defaultRenderer.addFolderLimit(child);*/
 		
 
 		try {
@@ -667,7 +667,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	public synchronized List<DLNAResource> getDLNAResources(String objectId, boolean returnChildren, int start, int count, RendererConfiguration renderer,
 			String searchStr) throws IOException {
 		ArrayList<DLNAResource> resources = new ArrayList<DLNAResource>();
-		DLNAResource resource = search(objectId, count, renderer);
+		DLNAResource resource = search(objectId, count, renderer,searchStr);
 
 		if (resource != null) {
 			resource.setDefaultRenderer(renderer);
@@ -769,16 +769,17 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	 * @see #getId()
 	 * 
 	 */
-	public DLNAResource search(String searchId, int count, RendererConfiguration renderer) {
+	public DLNAResource search(String searchId, int count, 
+			RendererConfiguration renderer,String searchStr) {
 		if (getId() != null && searchId != null) {
 			String[] indexPath = searchId.split("\\$", 2);
 			if (getId().equals(indexPath[0])) {
 				if (indexPath.length == 1 || indexPath[1].length() == 0) {
 					return this;
 				} else {
-					discoverWithRenderer(renderer, count,null);
+					discoverWithRenderer(renderer, count,searchStr);
 					for (DLNAResource file : getChildren()) {
-						DLNAResource found = file.search(indexPath[1], count, renderer);
+						DLNAResource found = file.search(indexPath[1], count, renderer,searchStr);
 						if (found != null) {
 							return found;
 						}

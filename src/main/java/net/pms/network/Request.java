@@ -207,6 +207,10 @@ public class Request extends HTTPResource {
 			if (transferMode != null) {
 				output(output, "TransferMode.DLNA.ORG: " + transferMode);
 			}
+			if(files!=null) {
+				logger.debug("Setting folder lim "+files.get(0));
+				mediaRenderer.getRootFolder().setFolderLim(files.get(0));
+			}
 			if (files.size() == 1) {
 				// DNLAresource was found.
 				dlna = files.get(0);

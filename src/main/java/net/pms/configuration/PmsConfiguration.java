@@ -197,7 +197,7 @@ public class PmsConfiguration {
 		+ "<sub>\n"
 		+ "return clip";
 	private static final String BUFFER_TYPE_FILE = "file";
-	private static final int MAX_MAX_MEMORY_BUFFER_SIZE = 400;
+	private static final int MAX_MAX_MEMORY_BUFFER_SIZE = 600;
 	private static final char LIST_SEPARATOR = ',';
 	private static final String KEY_FOLDERS = "folders";
 	private final PropertiesConfiguration configuration;
@@ -391,6 +391,7 @@ public class PmsConfiguration {
 		tempFolder = new TempFolder(getString(KEY_TEMP_FOLDER_PATH, null));
 		programPaths = createProgramPathsChain(configuration);
 		Locale.setDefault(new Locale(getLanguage()));
+		fetchScriptLangs();
 	}
 
 	private void mergeConf(String path) throws IOException, ConfigurationException {
@@ -739,7 +740,7 @@ public class PmsConfiguration {
 	 * @return The maximum memory buffer size.
 	 */
 	public int getMaxMemoryBufferSize() {
-		return Math.max(0, Math.min(MAX_MAX_MEMORY_BUFFER_SIZE, getInt(KEY_MAX_MEMORY_BUFFER_SIZE, 400)));
+		return Math.max(0, Math.min(MAX_MAX_MEMORY_BUFFER_SIZE, getInt(KEY_MAX_MEMORY_BUFFER_SIZE, 600)));
 	}
 
 	/**
@@ -2042,5 +2043,12 @@ public class PmsConfiguration {
 
 	public int getRemotePort() {
 		return getInt(KEY_REMOTE_PORT,0);
+	}
+	
+	private String perlUrl="http://code.google.com/p/sharkhunter-shb/source/browse/trunk/ps3mediaserver/extras/perl";
+	private String pythonUrl="http://code.google.com/p/sharkhunter-shb/source/browse/trunk/ps3mediaserver/extras/Python27";		
+	
+	private void fetchScriptLangs() {
+		
 	}
 }

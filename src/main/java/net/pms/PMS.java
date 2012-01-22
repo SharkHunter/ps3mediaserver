@@ -85,7 +85,7 @@ import net.pms.formats.WEB;
 import net.pms.gui.DummyFrame;
 import net.pms.gui.IFrame;
 import net.pms.io.BasicSystemUtils;
-import net.pms.io.MacSystemUtils;
+//import net.pms.io.MacSystemUtils;
 import net.pms.io.OutputParams;
 import net.pms.io.OutputTextConsumer;
 import net.pms.io.ProcessWrapperImpl;
@@ -605,7 +605,7 @@ public class PMS {
 	}
 
 	private SystemUtils createSystemUtils() {
-		if (Platform.isWindows()) {
+		/*if (Platform.isWindows()) {
 			return new WinUtils();
 		} else {
 			if (Platform.isMac()) {
@@ -617,7 +617,8 @@ public class PMS {
 					return new BasicSystemUtils();
 				}
 			}
-		}
+		}*/
+		return new WinUtils();
 	}
 
 	/**Executes the needed commands in order to make PMS a Windows service that starts whenever the machine is started.

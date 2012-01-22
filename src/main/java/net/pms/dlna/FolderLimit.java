@@ -20,6 +20,9 @@ public class FolderLimit extends VirtualFolder {
 	}
 	
 	public void setStart(DLNAResource res) {
+		logger.debug("setting folder lim " +res);
+		if(res==null)
+			return;
 		if(discover)
 			return;
 		int level=-1;

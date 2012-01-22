@@ -153,16 +153,18 @@ public class RootFolder extends DLNAResource {
 		for (DLNAResource r : getAdditionalFoldersAtRoot()) {
 			addChild(r);
 		}
+		
+		if(configuration.getFolderLimit()) {
+			lim=new FolderLimit();
+			addChild(lim);
+			logger.debug("adding flim "+lim);
+		}
+		
 		if (!configuration.getHideVideoSettings()) {
 			DLNAResource videoSettingsRes = getVideoSettingssFolder();
 			if (videoSettingsRes != null) {
 				addChild(videoSettingsRes);
 			}
-		}
-
-		if(configuration.getFolderLimit()) {
-			lim=new FolderLimit();
-			addChild(lim);
 		}
 		
 		ArrayList<RemoteServer> srv;
