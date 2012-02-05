@@ -1012,9 +1012,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>
-					<plugin>
-    
+					</plugin>    
 					<!--
 						Plugin to build a Windows installer using the nullsoft scriptable install system (NSIS)
 						The "generate-project" goal generates a file "target/project.nsh", which contains the
