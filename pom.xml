@@ -31,7 +31,7 @@
 	<artifactId>pms</artifactId>
 	<name>PS3 Media Server-SHB</name>
 	<packaging>jar</packaging>
-	<version>(SharkHunterBuild) 1.50.1 - SHB35a</version>
+	<version>(SharkHunterBuild) 1.50.1 - SHB35</version>
 	<url>http://www.ps3mediaserver.org/</url>
 	<inceptionYear>2008</inceptionYear>
 	
@@ -86,7 +86,7 @@
 		<!-- <project.binaries-base>http://ps3mediaserver.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base> -->
 		<project.binaries-base>http://sharkhunter-shb.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base>
 		<!-- <project.binaries-base>http://ps3mediaserver.googlecode.com/svn/tags/1.40.0</project.binaries-base> -->
-		
+
 		<maven.nsis.project.template>${project.basedir}/src/main/external-resources/nsis/project.jelly</maven.nsis.project.template>
 	</properties>
 
@@ -95,6 +95,12 @@
 			<id>ossrh</id>
 			<name>Sonatype OSS Repository</name>
 			<url>http://oss.sonatype.org/content/groups/public</url>
+			<layout>default</layout>
+		</pluginRepository>
+		<pluginRepository>
+			<id>copy</id>
+			<name>Maven-copy repo</name>
+			<url>http://evgeny-goldin.org/artifactory/repo/</url>
 			<layout>default</layout>
 		</pluginRepository>
 	</pluginRepositories>
@@ -359,7 +365,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.0</version>
+			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -393,8 +399,19 @@
 					<exclude>project.properties</exclude>
 				</excludes>
 
-				<!-- Enable the use of Maven properties -->
+				<!-- Avoid inadvertently filtering binaries -->
 				<filtering>false</filtering>
+			</resource>
+
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>resources</targetPath>
+				<includes>
+					<include>project.properties</include>
+				</includes>
+
+				<!-- Filter to replace Maven properties -->
+				<filtering>true</filtering>
 			</resource>
 			 <resource>
 				<directory>src/main/resources</directory>
@@ -441,7 +458,17 @@
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
-		
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.11</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>		
+
 		<plugins>
 			<!--
 				Plugin to add git commit information properties.
@@ -879,7 +906,6 @@
 										<mkdir dir="${project.binaries}/win32/service" />
 										<mkdir dir="${project.binaries}/extras" />
 										<mkdir dir="${project.binaries}/extras/bin" />
-
 										<!-- Download all necessary Windows binaries. Keep the same structure because NSIS expects it that way. -->
 										<get src="${project.binaries-base}/MediaInfo.dll" dest="${project.binaries}/MediaInfo.dll"  usetimestamp="true" />
 										<get src="${project.binaries-base}/MediaInfo64.dll" dest="${project.binaries}/MediaInfo64.dll" usetimestamp="true" />
@@ -987,7 +1013,8 @@
 							</execution>
 						</executions>
 					</plugin>
-					
+					<plugin>
+    
 					<!--
 						Plugin to build a Windows installer using the nullsoft scriptable install system (NSIS)
 						The "generate-project" goal generates a file "target/project.nsh", which contains the

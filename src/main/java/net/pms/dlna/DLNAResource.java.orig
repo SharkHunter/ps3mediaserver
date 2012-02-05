@@ -543,6 +543,8 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 							}
 						}
 
+<<<<<<< HEAD
+=======
 						boolean hasSubsToTranscode = false;
 						if (!PMS.getConfiguration().isMencoderDisableSubs()) {
 						    hasSubsToTranscode = (PMS.getConfiguration().getUseSubtitles() && child.isSrtFile()) || hasEmbeddedSubs;
@@ -554,6 +556,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 							isIncompatible = true;
 						}
 
+>>>>>>> base/master
 						// Force transcoding if
 						// 1- MediaInfo support detected the file was not matched with supported codec configs and no SkipTranscode extension forced by user
 						// or 2- ForceTranscode extension forced by user
@@ -591,7 +594,11 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 								}
 							}
 						}
+<<<<<<< HEAD
+					} else if (!child.getExt().ps3compatible() && !child.isFolder()) {
+=======
 					} else if (!child.getExt().isCompatible(child.getMedia(),getDefaultRenderer()) && !child.isFolder()) {
+>>>>>>> base/master
 						getChildren().remove(child);
 					}
 				}
@@ -601,8 +608,12 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 					newChild.setExt(newChild.getExt().getSecondaryFormat());
 					newChild.first = child;
 					child.second = newChild;
+<<<<<<< HEAD
+					if (!newChild.getExt().ps3compatible() && newChild.getExt().getProfiles().size() > 0) {
+=======
 
 					if (!newChild.getExt().isCompatible(newChild.getMedia(),getDefaultRenderer()) && newChild.getExt().getProfiles().size() > 0) {
+>>>>>>> base/master
 						newChild.setPlayer(PMS.get().getPlayer(newChild.getExt().getProfiles().get(0), newChild.getExt()));
 					}
 					if (child.getMedia() != null && child.getMedia().isSecondaryFormatValid()) {

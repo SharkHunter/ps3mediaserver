@@ -1,4 +1,4 @@
-version=0.27
+version=0.30
 
 scriptdef furkSubs {
 	release='1
@@ -30,7 +30,6 @@ scriptdef furkSubs2 {
 	episode=v3
 	play
 }
-
 
 scriptdef furkUpload {
 	url='------WebKitFormBoundaryoMPSU04IfEvfFd9N
@@ -71,7 +70,8 @@ macrodef furkMacro {
 		media {
 			matcher=<title>([^<]+)</title>\s+<location>([^<]+)</location>
 			order=name,url
-			subtitle=swesub,s4u,subscene
+			subtitle=swesub,s4u
+			#,subscene
 			prop=name_index=0
 		}
 	}
@@ -95,11 +95,12 @@ channel Furk {
    img=http://www.furk.net/img/logo.png?249
    subscript=furkSubs,furkSubs1,furkSubs2
    login {
-      url=http://www.furk.net/login/login/
+	  url=http://api.furk.net/api/login/login
       passwd=pwd
       user=login
       type=cookie      
       params=url=&gigya_uid=
+	  associate=www.furk.net
    }
    folder {
 		type=action

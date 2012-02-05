@@ -1,4 +1,4 @@
-version=0.51
+version=0.52
 
 ###########################
 ## s4u
@@ -252,7 +252,7 @@ stash podnapisis {
 #####################################################
 
 scriptdef subscene_matcher {
-	regex='<span id="r([^\"]+)"
+	regex='<span [^\>]+>/s*English/s*</span>/s*<span id="r([^\"]+)"
 	match s_url
 	id=v1
 	#<small>Download problems?<a href='/downloadissue.aspx?subtitleId=525340&contentType=zip'>Click here</a>
@@ -273,12 +273,12 @@ scriptdef subsceneName {
 	else
 		url='filmsearch.aspx?q=
 	endif
+	escape s_url
+	concat url s_url
 	play
 }
 
 subdef subscene {
-   # http://s4u.se/?film=Airplane!
-   #Http://api.s4u.se/ Version / ApiKey / xml | json | serialize / movie | serie | all / imdb | tmdb | tvdb | title | rls | fname / SearchString / 
    url=http://subscene.com/
    # <a class="a1" href="/english/Tinker-Tailor-Solider-Spy/subtitle-525340.aspx" title="Subtitle - Tinker Tailor Solider Spy - English"><span class="r0" >English</span>   
    name_script=subsceneName

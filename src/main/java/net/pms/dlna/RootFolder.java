@@ -113,14 +113,19 @@ public class RootFolder extends DLNAResource {
 		if(isDiscovered()) {
 			return;
 		}
+		
+		if(configuration.getFolderLimit()) {
+			lim=new FolderLimit();
+			addChild(lim);
+		}
 
 		if(!configuration.getNoFolders(tag)) {
-		for (DLNAResource r : getConfiguredFolders()) {
-			addChild(r);
-		}
-		for (DLNAResource r : getVirtualFolders()) {
-			addChild(r);
-		}
+			for (DLNAResource r : getConfiguredFolders()) {
+				addChild(r);
+			}
+			for (DLNAResource r : getVirtualFolders()) {
+				addChild(r);
+			}
 		}
 		File webConf = new File(configuration.getProfileDirectory(), "WEB.conf");
 		if (webConf.exists()) {
@@ -152,12 +157,6 @@ public class RootFolder extends DLNAResource {
 		}
 		for (DLNAResource r : getAdditionalFoldersAtRoot()) {
 			addChild(r);
-		}
-		
-		if(configuration.getFolderLimit()) {
-			lim=new FolderLimit();
-			addChild(lim);
-			logger.debug("adding flim "+lim);
 		}
 		
 		if (!configuration.getHideVideoSettings()) {
