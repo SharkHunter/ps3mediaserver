@@ -11,9 +11,9 @@ script {
 			def tmp = $URI.replaceAll(/\[/,/\\\[/).replaceAll(/\]/,/\\\]/)
 			$URI = tmp
 			
-			$URI = quoteURI($URI)
+			//$URI = quoteURI($URI)
 			$DOWNLOADER = "$CURL -s -S -b ${cookie} --location-trusted --output $DOWNLOADER_OUT ${$URI}"
-		  // set '-cookies-file' : quoteURI(cookie)
+		   //set '-cookies-file' : quoteURI(cookie)
 		}
 	}
 }

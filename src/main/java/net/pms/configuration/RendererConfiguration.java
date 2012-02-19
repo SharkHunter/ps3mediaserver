@@ -89,7 +89,7 @@ public class RendererConfiguration {
 	private RootFolder rootFolder;
 
 	public static void resetAllRenderers() {
-		for(RendererConfiguration rc  : renderersConfs) {
+		for(RendererConfiguration rc : renderersConfs) {
 			rc.rootFolder = null;
 		}
 	}
@@ -318,7 +318,7 @@ public class RendererConfiguration {
 		if (f != null) {
 			configuration.load(f);
 		}
-		
+
 		mimes = new HashMap<String, String>();
 		String mimeTypes = configuration.getString(MIME_TYPES_CHANGES, null);
 
@@ -700,7 +700,7 @@ public class RendererConfiguration {
 	 */
 	public String getCustomMencoderQualitySettings() {
 		return getString(CUSTOM_MENCODER_QUALITYSETTINGS, null);
-	}
+	} 
 
 	/**
 	 * Returns the override settings for MEncoder custom options in PMS as
@@ -886,7 +886,7 @@ public class RendererConfiguration {
 
 		if (format != null) {
 			String noTranscode = "";
-			
+
 			if (PMS.getConfiguration() != null) {
 				noTranscode = PMS.getConfiguration().getNoTranscode();
 			}

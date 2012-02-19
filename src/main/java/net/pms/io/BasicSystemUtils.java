@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicSystemUtils implements SystemUtils {
 	private final static Logger logger = LoggerFactory.getLogger(BasicSystemUtils.class); 
-	
+
 	protected String vlcp;
 	protected String vlcv;
 	protected boolean avis;
@@ -65,7 +65,6 @@ public class BasicSystemUtils implements SystemUtils {
 
 	@Override
 	public File getAvsPluginsDir() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -178,6 +177,7 @@ public class BasicSystemUtils implements SystemUtils {
 			}
 		}
 	}
+
 	/**
 	 * Fetch the hardware address for a network interface.
 	 * 
@@ -191,7 +191,7 @@ public class BasicSystemUtils implements SystemUtils {
 	public byte[] getHardwareAddress(NetworkInterface ni) throws SocketException {
 		return ni.getHardwareAddress();
 	}
-	
+
 	/**
 	 * Return the platform specific ping command. 
 	 * @param hostAddress
@@ -203,5 +203,4 @@ public class BasicSystemUtils implements SystemUtils {
 	public String[] getPingCommand(String hostAddress, int count, int packetSize) {
 		return new String[] { "ping", /* count */ "-c" , Integer.toString(count), /* size */ "-s", Integer.toString(packetSize), hostAddress };
 	}
-
 }

@@ -207,10 +207,10 @@ public class Request extends HTTPResource {
 			if (transferMode != null) {
 				output(output, "TransferMode.DLNA.ORG: " + transferMode);
 			}
-			if(files!=null) {
+			/*if(files!=null) {
 				logger.debug("Setting folder lim "+files.get(0));
 				mediaRenderer.getRootFolder().setFolderLim(files.get(0));
-			}
+			}*/
 			if (files.size() == 1) {
 				// DNLAresource was found.
 				dlna = files.get(0);
@@ -218,14 +218,14 @@ public class Request extends HTTPResource {
 
 				if (fileName.startsWith("thumbnail0000")) {
 					// This is a request for a thumbnail file.
-					output(output, "Content-Type: " + files.get(0).getThumbnailContentType());
+					output(output, "Content-Type: " + dlna.getThumbnailContentType());
 					output(output, "Accept-Ranges: bytes");
 					output(output, "Expires: " + getFUTUREDATE() + " GMT");
 					output(output, "Connection: keep-alive");
 					if (mediaRenderer.isMediaParserV2()) {
-						files.get(0).checkThumbnail();
+						dlna.checkThumbnail();
 					}
-					inputStream = files.get(0).getThumbnailInputStream();
+					inputStream = dlna.getThumbnailInputStream();
 				} else if (fileName.indexOf("subtitle0000") > -1) {
 					// This is a request for a subtitle file
 					output(output, "Content-Type: text/plain");
@@ -248,11 +248,12 @@ public class Request extends HTTPResource {
 						// No inputStream indicates that transcoding / remuxing probably crashed.
 						logger.error("There is no inputstream to return for " + name);
 					} else {
+						startStopListenerDelegate.start(dlna);
 						output(output, "Content-Type: " + getRendererMimeType(dlna.mimeType(), mediaRenderer));
 
 						// Some renderers (like Samsung devices) allow a custom header for a subtitle URL
 						String subtitleHttpHeader = mediaRenderer.getSubtitleHttpHeader();
-						
+
 						if (subtitleHttpHeader != null && !"".equals(subtitleHttpHeader)) {
 							// Device allows a custom subtitle HTTP header; construct it
 							List<DLNAMediaSubtitle> subs = dlna.getMedia().getSubtitlesCodes();
@@ -265,14 +266,15 @@ public class Request extends HTTPResource {
 								if (type < DLNAMediaSubtitle.subExtensions.length) {
 									String strType = DLNAMediaSubtitle.subExtensions[type - 1];
 									String subtitleUrl = "http://" + PMS.get().getServer().getHost()
-											+ ':' + PMS.get().getServer().getPort() + "/get/" 
-											+ id + "/subtitle0000." + strType;
+									+ ':' + PMS.get().getServer().getPort() + "/get/" 
+									+ id + "/subtitle0000." + strType;
 									output(output, subtitleHttpHeader + ": " + subtitleUrl);
 								}
 							}
 						}
 
 						final DLNAMediaInfo media = dlna.getMedia();
+
 						if (media != null) {
 							if (StringUtils.isNotBlank(media.getContainer())) {
 								name += " [container: " + media.getContainer() + "]";

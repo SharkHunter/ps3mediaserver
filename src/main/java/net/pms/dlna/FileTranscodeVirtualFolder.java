@@ -23,6 +23,7 @@ import net.pms.configuration.RendererConfiguration;
 import net.pms.dlna.virtual.VirtualFolder;
 import net.pms.encoders.MEncoderVideo;
 import net.pms.encoders.Player;
+import net.pms.encoders.PlayerFactory;
 import net.pms.encoders.TSMuxerVideo;
 
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class FileTranscodeVirtualFolder extends VirtualFolder {
 				DLNAResource ref = child;
 				Player tsMuxer = null;
 				for (int i = 0; i < child.getExt().getProfiles().size(); i++) {
-					Player pl = PMS.get().getPlayer(child.getExt().getProfiles().get(i), child.getExt());
+					Player pl = PlayerFactory.getPlayer(child.getExt().getProfiles().get(i), child.getExt());
 					if (pl != null && !child.getPlayer().equals(pl)) {
 						DLNAResource avisnewChild = (DLNAResource) child.clone();
 						avisnewChild.setPlayer(pl);
@@ -97,14 +98,14 @@ public class FileTranscodeVirtualFolder extends VirtualFolder {
 						newChildNoSub.setMediaAudio(ref.getMedia().getAudioCodes().get(i));
 						addChildInternal(newChildNoSub);
 						addChapterFile(newChildNoSub);
-
 					}
 				}
+
 				// meskibob: I think it'd be a good idea to add a "Stream" option (for PS3 compatible containers) to the #Transcode# folder in addition to the current options already in there.
 				DLNAResource justStreamed = (DLNAResource) ref.clone();
 
 				RendererConfiguration renderer = null;
-				
+
 				if (this.getParent() != null) {
 					renderer = this.getParent().getDefaultRenderer();
 				}

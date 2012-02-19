@@ -7,22 +7,22 @@
 		run it. While PMS itself is 100% pure Java, some of the third party software is
 		not. This means building a platform specific distribution boils down to first
 		building the pms.jar and then assembling all application resources.
-		
+
 		Note that Maven 3 does not automatically install all dependencies, unlike Maven 2.
 		To install all dependencies to your local repository, run the following commands:
-		
+
 		mvn com.savage7.maven.plugins:maven-external-dependency-plugin:resolve-external
 		mvn com.savage7.maven.plugins:maven-external-dependency-plugin:install-external
-		
+
 		To build PMS, do:
-		
+
 			mvn clean package
-		
+
 		After building, the "target" directory will contain the binary.
 		To generate a full source code report, do:
-		
+
 			mvn site
-			
+
 		After generating, the "target/site" directory will contain the reports.
 	-->
 
@@ -31,10 +31,10 @@
 	<artifactId>pms</artifactId>
 	<name>PS3 Media Server-SHB</name>
 	<packaging>jar</packaging>
-	<version>(SharkHunterBuild) 1.50.1 - SHB35</version>
+	<version>(SharkHunterBuild) 1.50.2 - SHB36</version>
 	<url>http://www.ps3mediaserver.org/</url>
 	<inceptionYear>2008</inceptionYear>
-	
+
 	<organization>
 		<name>PS3 Media Server</name>
 		<url>http://www.ps3mediaserver.org/</url>
@@ -49,11 +49,11 @@
 	</licenses>
 
 	<description>
-        PS3 Media Server is a cross-platform DLNA-compliant UPnP Media Server.
-        Originally written to support the PlayStation 3, PS3 Media Server has been
-        expanded to support a range of other media renderers, including smartphones,
-        televisions, music players and more.
-    </description>
+		PS3 Media Server is a cross-platform DLNA-compliant UPnP Media Server.
+		Originally written to support the PlayStation 3, PS3 Media Server has been
+		expanded to support a range of other media renderers, including smartphones,
+		televisions, music players and more.
+	</description>
 
 	<scm>
 		<connection>scm:git:git://github.com/ps3mediaserver/ps3mediaserver.git</connection>
@@ -69,19 +69,19 @@
 
 	<properties>
 		<!-- NSIS needs a version without "-SNAPSHOT" or "-b1" -->
-		<project.version.short>1.50.0</project.version.short>
-	
+		<project.version.short>1.50.2</project.version.short>
+
 		<cuelib-version>1.2.1-2008-06-13</cuelib-version>
 		<jgoodies-common-version>1.2.1</jgoodies-common-version>
 		<jgoodies-forms-version>1.4.2</jgoodies-forms-version>
 		<jgoodies-looks-version>2.4.2</jgoodies-looks-version>
 		<junrar-version>0.5</junrar-version>
 		<mediautil-version>1.0</mediautil-version>
-		<slf4j-version>1.6.3</slf4j-version>
+		<slf4j-version>1.6.4</slf4j-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.external-resources>${project.basedir}/src/main/external-resources</project.external-resources>
 		<project.binaries>${project.basedir}\target\bin</project.binaries>
-		
+
 		<!-- Snapshots should get their binaries from the trunk, releases from a tag -->
 		<!-- <project.binaries-base>http://ps3mediaserver.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base> -->
 		<project.binaries-base>http://sharkhunter-shb.googlecode.com/svn/trunk/ps3mediaserver</project.binaries-base>
@@ -169,7 +169,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.5</version>
+			<version>1.6</version>
 		</dependency>
 
 		<dependency>
@@ -225,13 +225,13 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>0.9.29</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>0.9.29</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -290,7 +290,7 @@
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
-			<version>1.1</version>
+			<version>1.1.2</version>
 		</dependency> -->
 
 		<dependency>
@@ -476,6 +476,33 @@
 				See: https://github.com/ktoso/maven-git-commit-id-plugin
 			-->
 			<plugin>
+    <groupId>com.goldin.plugins</groupId>
+    <artifactId>maven-copy-plugin</artifactId>
+    <version>0.2.3.5</version>
+    <executions>
+        <execution>
+            <id>create-archive</id>
+            <phase>process-resources</phase>
+            <goals>
+                <goal>copy</goal>
+            </goals>
+            <configuration>
+            <useTrueZipForUnpack>false</useTrueZipForUnpack>
+                <resources>
+                    <!-- ~~~~~~~~~~~~~~ -->
+                    <!-- Copy Perl/Python-->
+                    <!-- ~~~~~~~~~~~~~~ -->
+                    <resource>
+                        <targetPath>${project.external-resources}/extras</targetPath>
+                        <file>http://sharkhunter-shb.googlecode.com/files/pepy.zip</file>
+                        <unpack>true</unpack>
+                    </resource>
+                </resources>
+                </configuration>
+               </execution>
+               </executions>
+               </plugin>
+	<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<version>1.9</version>
@@ -886,13 +913,13 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<id>process-resources</id>
+								<id>process-resources-windows</id>
 								<phase>process-resources</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
+									<target>
 										<!-- Make sure the download folders exist -->
 										<mkdir dir="${project.binaries}" />
 										<mkdir dir="${project.binaries}/win32" />
@@ -990,25 +1017,25 @@
 										<get src="${project.binaries-base}/extras/bin/libssh2.dll" dest="${project.binaries}/extras/bin/libssh2.dll" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/libz-1.dll" dest="${project.binaries}/extras/bin/libz-1.dll" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/ssleay32.dll" dest="${project.binaries}/extras/bin/ssleay32.dll" usetimestamp="true" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 							<execution>
-								<id>prepare-package</id>
+								<id>prepare-package-windows</id>
 								<phase>prepare-package</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
-										<!-- Rename the pms-x.x.x-jar-with-dependencies.jar to pms.jar -->
-										<move file="${project.basedir}/target/${project.artifactId}-${project.version}-jar-with-dependencies.jar"
+									<target>
+										<!-- Copy the pms-x.x.x-jar-with-dependencies.jar to pms.jar -->
+										<copy file="${project.basedir}/target/${project.artifactId}-${project.version}-jar-with-dependencies.jar"
 											tofile="${project.basedir}/target/pms.jar" overwrite="true" />
 
 										<!-- MediaInfo library needs to be in the standard library path to be found -->
 										<copy file="${project.binaries}/MediaInfo.dll" todir="${project.basedir}" />
 										<copy file="${project.binaries}/MediaInfo64.dll" todir="${project.basedir}" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
@@ -1025,7 +1052,7 @@
 						<version>1.0-SNAPSHOT</version>
 						<executions>
 							<execution>
-								<id>build-pms</id>
+								<id>build-pms-windows</id>
 								<configuration>
 									<makensisBin>${project.external-resources}/third-party/nsis/makensis.exe</makensisBin>
 									<outputFile>${project.build.directory}/PMS.exe</outputFile>
@@ -1039,7 +1066,7 @@
 							</execution>
 
 							<execution>
-								<id>build-setup</id>
+								<id>build-setup-windows</id>
 								<configuration>
 									<makensisBin>${project.external-resources}/third-party/nsis/makensis.exe</makensisBin>
 									<outputFile>${project.build.directory}/PMS-setup.exe</outputFile>
@@ -1066,15 +1093,14 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 				<os>
-					<!-- OSX is also detected as Unix, ignore the false positive -->
-					<family>unix,!mac</family>
+					<family>unix</family>
 				</os>
 			</activation>
 			
 			<build>
 				<plugins>
 					<!--
-						Plugin to move the pms-x.x.x-jar-with-dependencies.jar to pms.jar
+						Plugin to copy the pms-x.x.x-jar-with-dependencies.jar to pms.jar
 					-->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -1082,33 +1108,33 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<id>process-resources</id>
+								<id>process-resources-linux</id>
 								<phase>process-resources</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
+									<target>
 										<!-- Make sure the binaries folder exists -->
 										<mkdir dir="${project.binaries}" />
 
 										<!-- Download binaries -->
 										<get src="${project.binaries-base}/linux/tsMuxeR" dest="${project.binaries}/tsMuxeR" usetimestamp="true" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 									
 							<execution>
-								<id>prepare-package</id>
-								<phase>prepare-package</phase>
+								<id>copy-jar-with-dependencies-linux</id>
+								<phase>package</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
-										<move file="${project.basedir}/target/${project.artifactId}-${project.version}-jar-with-dependencies.jar"
+									<target>
+										<copy file="${project.basedir}/target/${project.artifactId}-${project.version}-jar-with-dependencies.jar"
 											tofile="${project.basedir}/target/pms.jar" overwrite="true" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
@@ -1121,7 +1147,7 @@
 						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>build-pms</id>
+								<id>build-pms-linux</id>
 								<phase>package</phase>
 								<goals>
 									<goal>single</goal>
@@ -1167,14 +1193,14 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<id>process-resources</id>
+								<id>process-resources-osx</id>
 								<phase>test</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 
 								<configuration>
-									<tasks>
+									<target>
 										<!-- Make sure the binaries folder exists -->
 										<mkdir dir="${project.binaries}" />
 										<mkdir dir="${project.binaries}/osx" />
@@ -1196,18 +1222,18 @@
 
 										<copy file="${project.external-resources}/osx/pms.icns"
 											todir="${project.binaries}" overwrite="true" />
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 
 							<execution>
-								<id>prepare-package</id>
+								<id>prepare-package-osx</id>
 								<phase>prepare-package</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
-									<tasks>
+									<target>
 										<!-- Make sure the target folder exists -->
 										<mkdir dir="${project.build.directory}/${project.build.finalName}-distribution" />
 
@@ -1224,7 +1250,7 @@
 											<arg value="-e" />
 											<arg value="end tell" />
 										</exec>
-									</tasks>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
@@ -1238,7 +1264,7 @@
 						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>make-assembly</id>
+								<id>make-assembly-osx</id>
 								<phase>package</phase>
 								<goals>
 									<goal>single</goal>

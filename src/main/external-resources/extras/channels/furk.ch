@@ -1,10 +1,10 @@
-version=0.30
+version=0.32
 
 scriptdef furkSubs {
 	release='1
 	stripExt s_url
 	full_url=s_url
-	regex='\.\[.*?\]
+	regex='\.*\[.*?\]
 	replace s_url '
 	url=s_url
 	play
@@ -14,13 +14,15 @@ scriptdef furkSubs1 {
 	fname='1
 	stripExt s_url
 	full_url=s_url
-	regex='\.\[.*?\]
+	regex='\.*\[.*?\]
 	replace s_url '
 	url=s_url
 	play
 }
 
 scriptdef furkSubs2 {
+	regex='\.*\[.*?\]
+	replace s_url '
 	regex='(.*?)[Ss](\d+)[Ee](\d+) 
 	full_url=s_url
 	stripExt full_url
@@ -32,32 +34,9 @@ scriptdef furkSubs2 {
 }
 
 scriptdef furkUpload {
-	url='------WebKitFormBoundaryoMPSU04IfEvfFd9N
-	concat url '###n
-	concat url 'Content-Disposition: form-data; name="url"
-	concat url '###n
-	concat url '###n
+	url='url=
+	#escape s_url
 	concat url s_url
-	concat url '###n
-	concat url '------WebKitFormBoundaryoMPSU04IfEvfFd9N
-	concat url '###n
-	concat url 'Content-Disposition: form-data; name="info_hash"
-	concat url '###n
-	concat url '------WebKitFormBoundaryoMPSU04IfEvfFd9N
-	concat url '###n
-	concat url 'Content-Disposition: form-data; name="file"; filename=""
-	concat url '###n
-	concat url 'Content-Type: application/octet-stream
-	concat url '###n
-	concat url '------WebKitFormBoundaryoMPSU04IfEvfFd9N
-	concat url '###n
-	concat url 'Content-Disposition: form-data; name="notify"
-	concat url '###n
-	concat url '###n
-	concat url '1
-	concat url '###n
-	concat url '------WebKitFormBoundaryoMPSU04IfEvfFd9N
-	concat url '###n
 	play
 }
 
@@ -72,10 +51,11 @@ macrodef furkMacro {
 			order=name,url
 			subtitle=swesub,s4u
 			#,subscene
-			prop=name_index=0
+			prop=name_index=1
 		}
 	}
 }
+
 
 macrodef furkFolder {
 	folder {
@@ -105,11 +85,16 @@ channel Furk {
    folder {
 		type=action
 		action_name=upload
-		url=http://www.furk.net/users/files/add
+		#url=https://www.furk.net/users/files/add
+		url=http://api.furk.net/api/dl/add
 		prop=http_method=post
-		hdr=Content-Type=multipart/form-data; boundary=----WebKitFormBoundaryoMPSU04IfEvfFd9N
 		hdr=Referer=http://www.furk.net/users/files/add
-		macro=furkMacro
+		folder {
+			matcher=url_page":"([^"]+)
+			order=url
+			type=empty
+			macro=furkMacro
+		}
    }
    folder {
 		name=Stored

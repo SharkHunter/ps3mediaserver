@@ -8,3 +8,6 @@ libmediainfo.dylib
 MediaInfo.dll
 MediaInfo64.dll
 target
+*.orig
+Python27
+perl
