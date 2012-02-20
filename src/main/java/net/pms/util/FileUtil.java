@@ -10,8 +10,12 @@ import net.pms.dlna.DLNAMediaInfo;
 import net.pms.dlna.DLNAMediaSubtitle;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtil {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
+
 	public static File isFileExists(String f, String ext) {
 		return isFileExists(new File(f), ext);
 	}
@@ -79,6 +83,7 @@ public class FileUtil {
 				try {
 					subFolder = subFolder.getCanonicalFile();
 				} catch (IOException e) {
+					LOGGER.debug("Caught exception", e);
 				}
 			}
 			if (subFolder.exists()) {

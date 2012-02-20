@@ -52,6 +52,7 @@ public class DVDISOTitle extends DLNAResource {
 			try {
 				params.workDir = PMS.getConfiguration().getTempFolder();
 			} catch (IOException e1) {
+				logger.debug("Caught exception", e1);
 			}
 			cmd[2] = "-frames";
 			cmd[3] = "2";
@@ -153,8 +154,10 @@ public class DVDISOTitle extends DLNAResource {
 					if (!jpg.delete()) {
 						jpg.deleteOnExit();
 					}
-					if (!jpg.getParentFile().delete()) {
-						jpg.getParentFile().delete();
+
+					// Try and retry
+					if (!jpg.getParentFile().delete() && !jpg.getParentFile().delete()) {
+						logger.debug("Failed to delete \"" + jpg.getParentFile().getAbsolutePath() + "\"");
 					}
 				}
 				jpg = new File(frameName + "1.jpg");
@@ -189,11 +192,19 @@ public class DVDISOTitle extends DLNAResource {
 		getMedia().setDvdtrack(title);
 		getMedia().setContainer("iso");
 		getMedia().setCodecV("mpeg2video");
+
 		try {
 			getMedia().setWidth(Integer.parseInt(width));
+		} catch (NumberFormatException nfe) {
+			logger.debug("Could not parse width \"" + width + "\"");
+		}
+
+		try {
 			getMedia().setHeight(Integer.parseInt(height));
 		} catch (NumberFormatException nfe) {
+			logger.debug("Could not parse height \"" + height + "\"");
 		}
+
 		getMedia().setMediaparsed(true);
 
 		super.resolve();

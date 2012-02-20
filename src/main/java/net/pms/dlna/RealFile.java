@@ -90,6 +90,7 @@ public class RealFile extends MapFile {
 		try {
 			return new FileInputStream(getFile());
 		} catch (FileNotFoundException e) {
+			logger.debug("File not found: \"" + getFile().getAbsolutePath() + "\"");
 		}
 		return null;
 	}

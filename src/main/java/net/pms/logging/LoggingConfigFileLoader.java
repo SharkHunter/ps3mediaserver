@@ -125,6 +125,7 @@ public class LoggingConfigFileLoader {
 
 		} catch (JoranException je) {
 			// StatusPrinter will handle this
+			je.printStackTrace();
 		}
 
 		for (Logger logger : lc.getLoggerList()) {

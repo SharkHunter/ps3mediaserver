@@ -915,7 +915,7 @@ public class PmsConfiguration {
 
 	/**
 	 * Set the maximum number of concurrent mencoder threads.
-	 * FIXME: Currently unused.
+	 * XXX Currently unused.
 	 * @param value The maximum number of concurrent threads.
 	 */
 	public void setMencoderMaxThreads(int value) {

@@ -1,12 +1,21 @@
 package net.pms.xmlwise;
 
-import java.util.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
 /**
@@ -45,6 +54,8 @@ import java.io.Closeable;
  * @author Christoffer Lerno
  */
 public final class Plist {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Plist.class);
+
 	/**
 	 * Singleton instance.
 	 */
@@ -124,7 +135,7 @@ public final class Plist {
 				closeable.close();
 			}
 		} catch (IOException e) {
-			// Ignore
+			LOGGER.debug("Caught exception", e);
 		}
 	}
 

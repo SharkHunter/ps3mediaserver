@@ -130,6 +130,7 @@ public class LooksFrame extends JFrame implements IFrame, Observer {
 						systemClassName = gtkLAF;
 					}
 				} catch (ClassNotFoundException ce) {
+					logger.debug("Caught exception", ce);
 				}
 
 				logger.debug("Choosing java look and feel: " + systemClassName);
@@ -377,10 +378,11 @@ public class LooksFrame extends JFrame implements IFrame, Observer {
 	}
 
 	public void quit() {
-		WindowsNamedPipe.loop = false;
+		WindowsNamedPipe.setLoop(false);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
+			logger.error(null, e);
 		}
 		new File("pms.pid").delete();
 		System.exit(0);

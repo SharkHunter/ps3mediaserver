@@ -22,8 +22,8 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 
 import javax.imageio.ImageIO;
@@ -35,11 +35,16 @@ import javax.swing.JScrollPane;
 
 import net.pms.Messages;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class StatusTab {
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatusTab.class);
+
 	private static final int MAX_RENDERERS = 10;
 	private ImagePanel imagePanel;
 	private ImagePanel renderers[] = new ImagePanel[MAX_RENDERERS];
@@ -139,6 +144,7 @@ public class StatusTab {
 			try {
 				bi = ImageIO.read(LooksFrame.class.getResourceAsStream(url));
 			} catch (IOException e) {
+				LOGGER.debug("Caught exception", e);
 			}
 		}
 		return new ImagePanel(bi);
@@ -189,6 +195,7 @@ public class StatusTab {
 					bi = ImageIO.read(is);
 				}
 			} catch (IOException e) {
+				LOGGER.debug("Caught exception", e);
 			}
 		}
 

@@ -71,16 +71,43 @@ public class NetworkConfiguration {
 			return iface;
 		}
 
+		/**
+		 * Returns the name of the parent of the interface association.
+		 *
+		 * @return The name of the parent.
+		 */
 		public String getParentName() {
 			return parentName;
 		}
 
+		/**
+		 * Returns the name of the interface association.
+		 *
+		 * @return The name.
+		 */
 		public String getShortName() {
 			return iface.getName();
 		}
 
+		/**
+		 * Returns the display name of the interface association.
+		 *
+		 * @return The name.
+		 */
 		public String getDisplayName() {
-			return iface.getDisplayName().trim() + (addr != null ? " (" + addr.getHostAddress() + ")" : "");
+			String displayName = iface.getDisplayName();
+
+			if (displayName != null) {
+				displayName = displayName.trim();
+			} else {
+				displayName = iface.getName();
+			}
+
+			if (addr != null) {
+				displayName += " (" + addr.getHostAddress() + ")";
+			}
+
+			return displayName;
 		}
 		
 		@Override
@@ -112,12 +139,17 @@ public class NetworkConfiguration {
 	private Set<InetAddress> addAvailableAddresses(NetworkInterface netIface) {
 		Set<InetAddress> addrSet = new HashSet<InetAddress>();
 		LOG.trace("available addresses for {} is : {}", netIface.getName(), Collections.list(netIface.getInetAddresses()));
+
 		for (InterfaceAddress ia : netIface.getInterfaceAddresses()) {
-			InetAddress address = ia.getAddress();
-			if (isRelevantAddress(address)) {
-				addrSet.add(ia.getAddress());
+			if (ia != null) {
+				InetAddress address = ia.getAddress();
+
+				if (isRelevantAddress(address)) {
+					addrSet.add(ia.getAddress());
+				}
 			}
 		}
+
 		LOG.debug(" non loopback/ipv4 addresses : {}", addrSet);
 		addressMap.put(netIface.getName(), addrSet);
 		return addrSet;
@@ -137,7 +169,7 @@ public class NetworkConfiguration {
 		LOG.trace("checkNetworkInterface(parent = {}, child interfaces = {})", parentName, nis);
 		for (NetworkInterface ni : nis) {
 			if (!skipNetworkInterface(ni.getName(), ni.getDisplayName())) {
-				// check for interface has at least one ip address.
+				// check for interface has at least one IP address.
 				checkNetworkInterface(ni, parentName);
 			} else {
 				LOG.debug("child network interface ({},{}) is skipped, because skip_network_interfaces='{}'", 
@@ -168,20 +200,24 @@ public class NetworkConfiguration {
 		Set<InetAddress> subAddress = getAllAvailableAddresses(netIface.getSubInterfaces());
 		LOG.debug("sub address for {} is {}", netIface.getName(), subAddress);
 		boolean foundAddress = false;
+
 		for (InterfaceAddress ifaceAddr : netIface.getInterfaceAddresses()) {
-			InetAddress address = ifaceAddr.getAddress();
-			LOG.trace("checking {} from {} on {}", new Object[] { address, ifaceAddr, netIface.getName() });
-			if (isRelevantAddress(address)) {
-				if (!subAddress.contains(address)) {
-					LOG.debug("found {} -> {}", netIface.getName(), address.getHostAddress());
-					final InterfaceAssociation ni = new InterfaceAssociation(address, netIface, parentName);
-					interfaces.add(ni);
-					mainAddress.put(netIface.getName(), ni);
-					foundAddress = true;
+			if (ifaceAddr != null) {
+				InetAddress address = ifaceAddr.getAddress();
+				LOG.trace("checking {} from {} on {}", new Object[] { address, ifaceAddr, netIface.getName() });
+
+				if (isRelevantAddress(address)) {
+					if (!subAddress.contains(address)) {
+						LOG.debug("found {} -> {}", netIface.getName(), address.getHostAddress());
+						final InterfaceAssociation ni = new InterfaceAssociation(address, netIface, parentName);
+						interfaces.add(ni);
+						mainAddress.put(netIface.getName(), ni);
+						foundAddress = true;
+					}
+				} else {
+					LOG.debug("has {}, which is skipped, because loopback={}, ipv6={}", new Object[] { 
+						address, address.isLoopbackAddress(), (address instanceof Inet6Address)} );
 				}
-			} else {
-				LOG.debug("has {}, which is skipped, because loopback={}, ipv6={}", new Object[] { 
-					address, address.isLoopbackAddress(), (address instanceof Inet6Address)} );
 			}
 		}
 		if (!foundAddress) {
@@ -209,7 +245,7 @@ public class NetworkConfiguration {
 	public List<String> getDisplayNames() {
 		List<String> result = new ArrayList<String>(interfaces.size());
 		for (InterfaceAssociation i : interfaces) {
-			result.add(i.getDisplayName());
+				result.add(i.getDisplayName());
 		}
 		return result;
 	}

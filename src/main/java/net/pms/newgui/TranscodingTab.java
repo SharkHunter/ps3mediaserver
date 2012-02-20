@@ -58,6 +58,9 @@ import net.pms.configuration.PmsConfiguration;
 import net.pms.encoders.Player;
 import net.pms.encoders.PlayerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -65,6 +68,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.sun.jna.Platform;
 
 public class TranscodingTab {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TranscodingTab.class);
+
 	private final PmsConfiguration configuration;
 
 	TranscodingTab(PmsConfiguration configuration) {
@@ -365,6 +370,7 @@ public class TranscodingTab {
 					int ab = Integer.parseInt(maxbuffer.getText());
 					configuration.setMaxMemoryBufferSize(ab);
 				} catch (NumberFormatException nfe) {
+					LOGGER.debug("Could not parse max memory buffer size from \"" + maxbuffer.getText() + "\"");
 				}
 			}
 		});
@@ -415,6 +421,7 @@ public class TranscodingTab {
 					int ab = Integer.parseInt(chapter_interval.getText());
 					configuration.setChapterInterval(ab);
 				} catch (NumberFormatException nfe) {
+					LOGGER.debug("Could not parse chapter interval from \"" + chapter_interval.getText() + "\"");
 				}
 			}
 		});
@@ -470,6 +477,7 @@ public class TranscodingTab {
 					int ab = Integer.parseInt(abitrate.getText());
 					configuration.setAudioBitrate(ab);
 				} catch (NumberFormatException nfe) {
+					LOGGER.debug("Could not parse audio bitrate from \"" + abitrate.getText() + "\"");
 				}
 			}
 		});

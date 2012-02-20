@@ -18,13 +18,22 @@
  */
 package net.pms.newgui;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.RenderedImage;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class ImagePanel extends JPanel {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImagePanel.class);
 	private static final long serialVersionUID = -6709086531128513425L;
 	protected RenderedImage source;
 	protected int originX;
@@ -116,7 +125,8 @@ class ImagePanel extends JPanel {
 			graphics2d.drawRenderedImage(
 				source,
 				AffineTransform.getTranslateInstance(i, j));
-		} catch (OutOfMemoryError outofmemoryerror) {
+		} catch (OutOfMemoryError e) {
+			LOGGER.debug("Caught exception", e);
 		}
 	}
 }

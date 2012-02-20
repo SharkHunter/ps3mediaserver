@@ -65,10 +65,10 @@ public class MpegUtil {
 			Integer id = (((buffer[i + 1] + 256) % 256) - 64) * 256 + ((buffer[i + 2] + 256) % 256); // calc id
 			if (buffer[i + 7] == -32 && buffer[i + 6] == 1) {
 				int diff = i + 7 + 4; // 47 50 11 11 00 00 01 E0 00 00 84 C0
-				if ((buffer[diff] & 128) == 128 && (buffer[diff + 2] & 32) == 32) { // check pts
-					if (pts.get(id) == null || (pts.get(id) != null && end)) {
-						pts.put(id, new Integer(getTS(buffer, diff + 3)));
-					}
+				// check pts
+				if ((buffer[diff] & 128) == 128 && (buffer[diff + 2] & 32) == 32
+						&& (pts.get(id) == null || (pts.get(id) != null && end))) {
+					pts.put(id, new Integer(getTS(buffer, diff + 3)));
 				}
 			}
 		}
@@ -81,13 +81,26 @@ public class MpegUtil {
 	}
 
 	/**
-	 * gets possition for specified time in mpeg stream (M2TS, TS) 
+	 * @deprecated Use {@link #getPositionForTimeInMpeg(File, int)} instead.
+	 * gets position for specified time in MPEG stream (M2TS, TS)
 	 * @param f - file to check
 	 * @param timeS - time (in seconds) to find
 	 * @return position in stream (in bytes).
 	 * @throws IOException
 	 */
+	@Deprecated
 	public static long getPossitionForTimeInMpeg(File f, int timeS) throws IOException {
+	    return getPositionForTimeInMpeg(f, timeS);
+	}
+
+	/**
+	 * gets position for specified time in MPEG stream (M2TS, TS)
+	 * @param f - file to check
+	 * @param timeS - time (in seconds) to find
+	 * @return position in stream (in bytes).
+	 * @throws IOException
+	 */
+	public static long getPositionForTimeInMpeg(File f, int timeS) throws IOException {
 		RandomAccessFile raf = new RandomAccessFile(f, "r");
 		Map<Integer, Integer> ptsStart = checkRange(raf, 0, 250000, false);
 		long currentPos = 0;
@@ -95,9 +108,9 @@ public class MpegUtil {
 		if (ptsStart != null && !ptsStart.isEmpty()) {
 			long minRangePos = 0;
 			long maxRangePos = raf.length();
-			boolean nextPossition = true;
-			while (maxRangePos - minRangePos > 250000 && nextPossition) {
-				nextPossition = false;
+			boolean nextPosition = true;
+			while (maxRangePos - minRangePos > 250000 && nextPosition) {
+				nextPosition = false;
 				currentPos = minRangePos + (maxRangePos - minRangePos) / 2;
 				Map<Integer, Integer> ptsEnd = checkRange(raf, currentPos, 250000, false);
 				if (ptsEnd != null) {
@@ -112,7 +125,7 @@ public class MpegUtil {
 								return currentPos;
 							}
 
-							nextPossition = true;
+							nextPosition = true;
 							if (time > timeS) {
 								maxRangePos = currentPos;
 							} else {

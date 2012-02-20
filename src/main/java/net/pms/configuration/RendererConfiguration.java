@@ -48,6 +48,7 @@ public class RendererConfiguration {
 		try {
 			defaultConf = new RendererConfiguration();
 		} catch (ConfigurationException e) {
+			logger.debug("Caught exception", e);
 		}
 
 		File renderersDir = getRenderersDir();
@@ -876,12 +877,10 @@ public class RendererConfiguration {
 	 * 				otherwise.
 	 */
 	public boolean isCompatible(DLNAMediaInfo mediainfo, Format format) {
-		if (isMediaParserV2() && mediainfo != null) {
-			// Use the configured "Supported" lines in the renderer.conf
-			// to see if any of them match the MediaInfo library
-			if (getFormatConfiguration().match(mediainfo) != null) {
-				return true;
-			}
+		// Use the configured "Supported" lines in the renderer.conf
+		// to see if any of them match the MediaInfo library
+		if (isMediaParserV2() && mediainfo != null && getFormatConfiguration().match(mediainfo) != null) {
+			return true;
 		}
 
 		if (format != null) {

@@ -32,6 +32,8 @@ import java.net.BindException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +84,7 @@ import net.pms.util.TaskRunner;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.event.ConfigurationEvent;
 import org.apache.commons.configuration.event.ConfigurationListener;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,11 +140,13 @@ public class PMS {
 	/**
 	 * @deprecated This field is not used and will be removed in the future. 
 	 */
+	@Deprecated
 	public final static SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss.SSS", Locale.US);
 
 	/**
 	 * @deprecated This field is not used and will be removed in the future. 
 	 */
+	@Deprecated
 	public final static SimpleDateFormat sdfHour = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 
 	/**
@@ -326,10 +331,9 @@ public class PMS {
 		configuration.addConfigurationListener(new ConfigurationListener() {
 			@Override
 			public void configurationChanged(ConfigurationEvent event) {
-				if (!event.isBeforeUpdate()) {
-					if (PmsConfiguration.NEED_RELOAD_FLAGS.contains(event.getPropertyName())) {
-						frame.setReloadable(true);
-					}
+				if ((!event.isBeforeUpdate())
+						&& PmsConfiguration.NEED_RELOAD_FLAGS.contains(event.getPropertyName())) {
+					frame.setReloadable(true);
 				}
 			}
 		});
@@ -398,6 +402,20 @@ public class PMS {
 
 		logger.info("Profile name: " + configuration.getProfileName());
 		logger.info("");
+		
+		// Load any dynamic libraries that might be needed
+		String libsStr=(String)configuration.getCustomProperty("dynamic_libs");
+		if(!StringUtils.isEmpty(libsStr)) {
+			String[] libs=libsStr.split(",");
+			for(int i=0;i<libs.length;i++) {
+				logger.debug("load dynamic lib "+libs[i]);
+				try {
+					System.loadLibrary(libs[i]);
+				} catch (Throwable e) {
+					logger.info("Dynamic lib "+libs[i]+" failed to load.");
+				}
+			}
+		}
 
 		remClient = null;
 		if(configuration.getRemoteClient()) {
@@ -542,7 +560,10 @@ public class PMS {
 					}
 					get().getServer().stop();
 					Thread.sleep(500);
-				} catch (Exception e) {
+				} catch (IOException e) {
+					logger.debug("Caught exception", e);
+				} catch (InterruptedException e) {
+					logger.debug("Caught exception", e);
 				}
 			}
 		});
@@ -755,8 +776,10 @@ public class PMS {
 							logger.info(String.format("Generated new UUID based on the MAC address of the network adapter '%s'", ni.getDisplayName()));
 						}
 					}
-				} catch (Throwable e) {
-					//do nothing
+				} catch (SocketException e) {
+					logger.debug("Caught exception", e);
+				} catch (UnknownHostException e) {
+					logger.debug("Caught exception", e);
 				}
 
 				//create random UUID if the generation by MAC address failed
@@ -822,12 +845,12 @@ public class PMS {
 				logger.error("A serious error occurred during PMS init");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("A serious error occurred during PMS init", e);
 		}
 	}
 
 	/**
-	 * @deprecated Use {@link FormatFactory#getAssociatedExtension(filename)}
+	 * @deprecated Use {@link FormatFactory#getAssociatedExtension(String)}
 	 * instead.
 	 *
 	 * @param filename
@@ -879,9 +902,9 @@ public class PMS {
 		}
 
 		try {
-			configuration = new PmsConfiguration();
+			setConfiguration(new PmsConfiguration());
 
-			assert configuration != null;
+			assert getConfiguration() != null;
 
 			// Load the (optional) logback config file. This has to be called after 'new PmsConfiguration'
 			// as the logging starts immediately and some filters need the PmsConfiguration.
@@ -951,7 +974,7 @@ public class PMS {
 	 * 
 	 * @param profileClass
 	 * @param ext
-	 * @return
+	 * @return The player if a match could be found
 	 */
 	@Deprecated
 	public Player getPlayer(Class<? extends Player> profileClass, Format ext) {
@@ -963,7 +986,7 @@ public class PMS {
 	 * 
 	 * @param profileClasses
 	 * @param type
-	 * @return
+	 * @return The list of players that match
 	 */
 	@Deprecated
 	public ArrayList<Player> getPlayers(ArrayList<Class<? extends Player>> profileClasses, int type) {
@@ -979,10 +1002,10 @@ public class PMS {
 	}
 
 	public void storeFileInCache(File file, int formatType) {
-		if (getConfiguration().getUseCache()) {
-			if (!getDatabase().isDataExists(file.getAbsolutePath(), file.lastModified())) {
-				getDatabase().insertData(file.getAbsolutePath(), file.lastModified(), formatType, null);
-			}
+		if (getConfiguration().getUseCache()
+				&& !getDatabase().isDataExists(file.getAbsolutePath(), file.lastModified())) {
+
+			getDatabase().insertData(file.getAbsolutePath(), file.lastModified(), formatType, null);
 		}
 	}
 
@@ -990,6 +1013,7 @@ public class PMS {
 	 * Retrieves the {@link net.pms.configuration.PmsConfiguration PmsConfiguration} object
 	 * that contains all configured settings for PMS. The object provides getters for all
 	 * configurable PMS settings.
+	 *
 	 * @return The configuration object
 	 */
 	public static PmsConfiguration getConfiguration() {
@@ -1063,6 +1087,17 @@ public class PMS {
 		if((remClient==null)||(s==null)||(r==null))
 			return;
 		remClient.setBitRate(r,s);
+	}
+
+	/**
+	 * Sets the {@link net.pms.configuration.PmsConfiguration PmsConfiguration} object
+	 * that contains all configured settings for PMS. The object provides getters for all
+	 * configurable PMS settings.
+	 *
+	 * @param conf The configuration object.
+	 */
+	public static void setConfiguration(PmsConfiguration conf) {
+		configuration = conf;
 	}
 
 	/**
