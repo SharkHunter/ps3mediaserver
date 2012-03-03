@@ -354,15 +354,17 @@ public class PmsConfiguration {
 		configuration.setFileName(PROFILE_PATH);
 
 		File pmsConfFile = new File(PROFILE_PATH);
-		File mFile=new File(PROFILE_PATH+".new");
+		File mFile=new File(System.getProperty("user.dir")+File.separator+
+							DEFAULT_PROFILE_FILENAME+".new");
 		if (pmsConfFile.exists() && pmsConfFile.isFile()) {
 			configuration.load(PROFILE_PATH);
 			mergeConf(PROFILE_DIRECTORY);
+			mergeConf(System.getProperty("user.dir"));
 		}
 		else if(mFile.exists()) {
 			/*FileUtils.copyFile(mFile, pmsConfFile);
 			configuration.load(PROFILE_PATH);*/
-			mergeConf(PROFILE_DIRECTORY);
+			mergeConf(System.getProperty("user.dir"));
 		}
 		else {	
 			String profileDir = null;
@@ -447,7 +449,7 @@ public class PmsConfiguration {
 				}
 				if(cf!=null)   { // we got some file copy it
 					FileUtils.copyFile(cf, cFile);
-					configuration.setProperty("cred.path", cFile.getAbsolutePath());
+					//configuration.setProperty("cred.path", cFile.getAbsolutePath());
 				}
 			}
 		}

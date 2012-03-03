@@ -2131,8 +2131,8 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 		return false;
 	}
 
-	public void refreshChildren(String str) {
-		refreshChildren();
+	public boolean refreshChildren(String str) {
+		return refreshChildren();
 	}
 	
 	public void updateRender(RendererConfiguration newRender) {
