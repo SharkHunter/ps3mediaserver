@@ -195,7 +195,7 @@ public class ExternalFactory {
 			// Skip the classes that should not be instantiated at this
 			// time but rather at a later time.
 			if (!AdditionalFolderAtRoot.class.isAssignableFrom(clazz) &&
-				!AdditionalFoldersAtRoot.class.isAssignableFrom(clazz)) {
+				!AdditionalFoldersAtRoot.class.isAssignableFrom(clazz)){
 
 				try {
 					// Create a new instance of the plugin class and store it

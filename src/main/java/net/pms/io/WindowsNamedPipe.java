@@ -46,7 +46,7 @@ public class WindowsNamedPipe extends Thread implements ProcessWrapper {
 	 * to copy from memory to an {@link java.io.OutputStream OutputStream} such as
 	 * {@link net.pms.io.BufferedOutputFile BufferedOutputFile}.
 	 */
-	private static final int BUFSIZE = 500000;
+	private static final int BUFSIZE = 5000000;
 
 	public interface Kernel32 extends StdCallLibrary {
 		Kernel32 INSTANCE = (Kernel32) Native.loadLibrary("kernel32",

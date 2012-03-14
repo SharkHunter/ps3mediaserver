@@ -49,7 +49,7 @@ public class Build {
 	 * @return The profile directory name
 	 */
 	private static final String PROFILE_DIRECTORY_NAME = "PMS-SHB";
-	private static final String BUILD_NAME="SHB38";
+	private static final String BUILD_NAME="SHB39";
 	private static final String FULL_NAME="SharkHunter Build";
 
 	/**

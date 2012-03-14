@@ -34,7 +34,6 @@
 			</includes>
 		</fileSet>
 
-		<!-- Include executable script -->
 		<fileSet>
 			<directory>${project.external-resources}</directory>
 			<outputDirectory>.</outputDirectory>
@@ -43,7 +42,17 @@
 				<include>PMS.sh</include>
 			</includes>
 		</fileSet>
-
+		
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>.</outputDirectory>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<includes>
+			<include>contrib/*.sh</include>
+			</includes>
+		</fileSet>
+		
 		<!-- Include documentation -->
 		<fileSet>
 			<directory>${project.basedir}</directory>
@@ -61,6 +70,7 @@
 			<directory>${project.external-resources}</directory>
 			<outputDirectory>.</outputDirectory>
 			<fileMode>0644</fileMode>
+			<lineEnding>unix</lineEnding>
 			<includes>
 				<include>PMS.conf</include>
 				<include>WEB.conf</include>
@@ -70,8 +80,54 @@
 				<include>linux/*.txt</include>
 				<include>plugins/**</include>
 				<include>renderers/*</include>
+				<include>extras/cookies</include>
+				<include>extras/channels/*</include>
+				<include>extras/scripts/*</include>
+			</includes>
+			<excludes>
+			<!-- Exclude these as they need otehr filmodes (and the windows bat should be skipped) -->
+				<exclude>extras/scripts/*.bat</exclude>
+				<exclude>extras/scripts/*.lin</exclude>
+				<exclude>extras/scripts/*.pl</exclude>
+				<exclude>extras/scripts/*.py</exclude>
+			</excludes>
+		</fileSet>
+		
+		<!-- Add the perl/python scripts (they need exec rights) -->
+		<fileSet>
+			<directory>${project.external-resources}</directory>
+			<outputDirectory>.</outputDirectory>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<includes>
+				<include>extras/scripts/*.pl</include>
+				<include>extras/scripts/*.py</include>
 			</includes>
 		</fileSet>
-
 	</fileSets>
+	
+	<!-- Copy the fake bat files (these need to be renamed and hav exec rights)-->
+	<files>
+		<file>
+			<source>${project.external-resources}/extras/scripts/get_iplayer_update.lin</source>
+			<outputDirectory>.</outputDirectory>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<destName>extras/scripts/get_iplayer_update.bat</destName>
+		</file>
+		<file>
+			<source>${project.external-resources}/extras/scripts/get_iplayer2.lin</source>
+			<outputDirectory>.</outputDirectory>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<destName>extras/scripts/get_iplayer2.bat</destName>
+		</file>
+		<file>
+			<source>${project.external-resources}/extras/scripts/get_flash_videos.lin</source>
+			<outputDirectory>.</outputDirectory>
+			<fileMode>0755</fileMode>
+			<lineEnding>unix</lineEnding>
+			<destName>extras/scripts/get_flash_videos.bat</destName>
+		</file>
+	</files>
 </assembly>
