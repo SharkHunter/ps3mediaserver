@@ -36,8 +36,9 @@ macrodef tvMacro {
 				url=http://www.1channel.ch
 				folder {
 					#<a href="/external.php?title=The+Walking+Dead&url=aHR0cDovL3d3dy5wdXRsb2NrZXIuY29tL2ZpbGUvMEY2RUY0NUIyRkE2MjI2MQ==&domain=cHV0bG9ja2VyLmNvbQ==&loggedin=0" onClick="return  addHit('1889616332', '1')" rel="nofollow" title="Watch Version 1 of The Walking Dead" target="_blank">Version 1</a>
-					matcher=href=\"([^\"]+)\"[^>]+>(Version[^<]+)<
-					order=url,name
+					 matcher=href=\"([^\"]+)\"[^>]+>(Version[^<]+)</a>[\s]+.*[\s]+.*"><.*=[^/]+/[^/|']+[/|']([^.]+)
+					order=url,name,name
+					prop = name_separator= - ,
 					url=http://www.1channel.ch
 					#type=empty
 					media {
@@ -49,6 +50,13 @@ macrodef tvMacro {
 			}
 		}
 	}
+	folder {
+      matcher=<a href="(/index[^"]+)">([^<]+)</a>
+      order=url,name
+      url=http://www.1channel.ch
+      prop=prepend_name=Goto -
+      type=recurse
+   }
 }
 
 macrodef movieMacro {

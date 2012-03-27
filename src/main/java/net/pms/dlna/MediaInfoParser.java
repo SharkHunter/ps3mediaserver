@@ -51,7 +51,7 @@ public class MediaInfoParser {
 					StringTokenizer st = new StringTokenizer(info, "\n\r");
 					while (st.hasMoreTokens()) {
 						String line = st.nextToken().trim();
-						//System.out.println(line);
+
 						if (line.equals("Video") || line.startsWith("Video #")) {
 							step = MediaInfo.StreamKind.Video;
 						} else if (line.equals("Audio") || line.startsWith("Audio #")) {
@@ -152,6 +152,8 @@ public class MediaInfoParser {
 								currentAudioTrack.setAlbum(ovalue);
 							} else if (key.equals("Performer") && step == MediaInfo.StreamKind.General) {
 								currentAudioTrack.setArtist(ovalue);
+							} else if (key.equals("Genre") && step == MediaInfo.StreamKind.General) {
+								currentAudioTrack.setGenre(ovalue);
 							} else if (key.equals("Recorded_Date") && step == MediaInfo.StreamKind.General) {
 								try {
 									currentAudioTrack.setYear(Integer.parseInt(value));
