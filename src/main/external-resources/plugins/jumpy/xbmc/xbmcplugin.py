@@ -5,9 +5,9 @@ from urlparse import urlparse
 import jumpy, xbmcinit, xbmc
 
 # some plugins seem to expect these to be preloaded
+# sys is already preloaded by jumpy
 import __builtin__
 __builtin__.os = os
-__builtin__.sys = sys
 __builtin__.xbmc = xbmc
 
 # xbmc/interfaces/python/xbmcmodule/pyutil.h
@@ -196,7 +196,8 @@ def setResolvedUrl(handle, succeeded, listitem, stack=-1):
 	pms.addItem(media, name, url, fullPath(url, listitem.getProperty('thumbnailImage')))
 	print "*** setResolvedUrl ***"
 	print "raw : %s" % listitem.getProperty('path')
-	print "name: %s" % name
+	try: print "name: %s" % name
+	except UnicodeEncodeError: print "name: %s" % name.encode('ascii', 'ignore')
 	print "type: %d" % media
 	print "url :",url
 
@@ -232,7 +233,7 @@ def setPluginCategory(handle, category):
 	"""Sets the plugins name for skins to display."""
 	pass
 
-def setPluginFanart(handle, image, color1, color2, color3):
+def setPluginFanart(handle, image, color1=None, color2=None, color3=None):
 	"""Sets the plugins fanart and color for skins to display."""
 	pass
 

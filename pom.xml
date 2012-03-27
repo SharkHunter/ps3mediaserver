@@ -31,7 +31,7 @@
 	<artifactId>pms</artifactId>
 	<name>PS3 Media Server-SHB</name>
 	<packaging>jar</packaging>
-	<version>1.51.1- SHB38</version>
+	<version>1.51.1-SHB40</version>
 	<url>http://www.ps3mediaserver.org/</url>
 	<inceptionYear>2008</inceptionYear>
 
@@ -78,6 +78,7 @@
 		<junrar-version>0.5</junrar-version>
 		<mediautil-version>1.0</mediautil-version>
 		<slf4j-version>1.6.4</slf4j-version>
+		<dnsjava-version>2.1.3</dnsjava-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.external-resources>${project.basedir}/src/main/external-resources</project.external-resources>
 		<project.binaries>${project.basedir}\target\bin</project.binaries>
@@ -338,7 +339,16 @@
 			<artifactId>mediautil</artifactId>
 			<version>${mediautil-version}</version>
 		</dependency>
-
+		
+		<!-- XXX: not Mavenized: http://sourceforge.net/projects/mediachest/ -->
+		<dependency>
+    		<groupId>org.dnsjava</groupId>
+    		<artifactId>dnsjava</artifactId>
+    		<version>${dnsjava-version}</version>
+    		<!--  <scope>system</scope>
+    		<systemPath>${project.external-resources}/lib/org.xbill.dns_${dnsjava-version}.jar</systemPath>-->
+		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -716,7 +726,19 @@
 							<extractFile>mediautil-${mediautil-version}/mediautil-${mediautil-version}.jar</extractFile>
 							<extractFileChecksum>e843cd55def75dce57123c79b7f36caca4841466</extractFileChecksum>
 						</artifactItem>
-
+						
+						 <artifactItem>
+       						<groupId>org.dnsjava</groupId>
+       						<artifactId>dnsjava</artifactId>
+       						<version>${dnsjava-version}</version>
+       						<packaging>jar</packaging>
+       						<downloadUrl>
+					          http://www.dnsjava.org/download/dnsjava-${dnsjava-version}.jar
+					       </downloadUrl>
+       					   <install>true</install>
+       					   <force>false</force>
+   						</artifactItem>
+											
 					</artifactItems>
 
 				</configuration>
@@ -1044,6 +1066,7 @@
 										<get src="${project.binaries-base}/win32/service/wrapper.dll" dest="${project.binaries}/win32/service/wrapper.dll" usetimestamp="true" />
 										<get src="${project.binaries-base}/win32/service/wrapper.exe" dest="${project.binaries}/win32/service/wrapper.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/win32/service/wrapper.jar" dest="${project.binaries}/win32/service/wrapper.jar" usetimestamp="true" />
+										<get src="${project.binaries-base}/win32/mencoder_bak.exe" dest="${project.binaries}/win32/mencoder_bak.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/rtmpdump.exe" dest="${project.binaries}/extras/bin/rtmpdump.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/curl.exe" dest="${project.binaries}/extras/bin/curl.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/youtube-dl.exe" dest="${project.binaries}/extras/bin/youtube-dl.exe" usetimestamp="true" />
@@ -1125,7 +1148,7 @@
 		<profile>
 			<id>linux</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 				<os>
 					<family>unix</family>
 				</os>
@@ -1149,6 +1172,7 @@
 								</goals>
 								<configuration>
 									<target>
+										
 										<!-- Make sure the binaries folder exists -->
 										<mkdir dir="${project.binaries}" />
 

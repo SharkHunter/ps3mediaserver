@@ -5,6 +5,9 @@
 .orange {
 	color: #ff6600;
 }
+.comment {
+	color: dimgrey;
+}
 ul {
 	list-style-type: disc;
 }
@@ -12,6 +15,11 @@ pre, code {
 	color: darkblue;
 	text-decoration: none;
 	/*font-weight: bold;*/
+}
+kbd {
+	color: darkblue;
+	text-decoration: none;
+	font-weight: bold;
 }
 body {
    font-family: sans-serif;
@@ -57,7 +65,7 @@ for your platform.
 <li><a href="http://wiki.xbmc.org/index.php?title=Unofficial_Add-on_Repositories" target="_blank">Install and configure</a>
 some <a href="http://wiki.xbmc.org/index.php?title=Category:All_add-ons" target="_blank">addons</a>
 inside xbmc (and of course test them too, some are obsolete). You may need to configure username/password depending
-on the plugin, and so on.
+on the addon, and so on.
 </li>
 </ol>
 <br/>
@@ -76,18 +84,38 @@ is always the case.
 </li>
 </ol>
 <br/>
+<b>Bookmarks</b>
+<ul>
+Press the <i>Add bookmark</i> button in any folder to create a bookmark inside <i> Jumpy > Bookmarks</i>. These are saved to <b><i>jumpy-bookmarks.ini</i></b> in your PMS profile folder (wherever <i>PMS.conf</i> is). You can edit this file, for instance to change the labels or reorder the items.
+</ul>
+<br/>
 <b>Log and Conf</b>
 <ul>
 Locations are according to your PMS installation (see jumpy's init messages inside your <i>debug.log</i> for the specific paths):<br/><br/>
 <ul>
 <li><b><i>jumpy.log</i></b>: located wherever <i>debug.log</i> is.
 </li><br/>
-<li><b><i>jumpy.conf</i></b>:  omitted by default, but should be located wherever <i>PMS.conf</i> is.
+<li><b><i>jumpy.conf</i></b>: omitted by default, but should be located wherever <i>PMS.conf</i> is.
 The available settings are:
-<pre><i># whether to copy log output to the console (true|false)</i>
-debug=false
+<pre><i class="comment"># whether to activate bookmarks (true|false)</i>
+<b>bookmarks</b>=true
+
+<i class="comment"># whether to qualify the bookmark name (true|false)
+# e.g. 'Live :ESPN' instead of just 'Live'</i>
+<b>verbose_bookmarks</b>=true
+
+<i class="comment"># how often to refresh folder content in minutes
+# (-1=never|0=always|1=one minute)</i>
+<b>refresh</b>=60
+
+<i class="comment"># whether to copy log output to the console (true|false)</i>
+<b>debug</b>=false
 </pre>
 </li>
+<li><b><i>jumpy-xbmc.conf</i></b>: omitted by default, but should be located wherever <i>PMS.conf</i> is.
+If you need to override the location where jumpy looks for xbmc, create this file and set:
+<pre><b>xbmc_home</b>=c:\path\to\my\XBMC</pre>
+</li><br/>
 </ul>
 When reporting bugs please attach these together as one zip file (or use the <a href="https://github.com/SharkHunter/DbgPack">DbgPack</a> plugin):
 <ul>
@@ -97,7 +125,7 @@ When reporting bugs please attach these together as one zip file (or use the <a 
 <br/>
 <b>Writing Your Own Python Scripts</b>
 <ul>
-Have a look at <i>helloworld.py</i> and <i>xbmc.py</i> in the '<i>plugins/jumpy</i>' folder. Basically your script does something,
+Have a look at <a href="#helloworld.py"><i>helloworld.py</i></a> below and <i>xbmc.py</i> in the '<i>plugins/jumpy</i>' folder. Basically your script does something,
 adds some items to the current xmb folder and exits.  
 <ul>
 <li>A script is always called from its own directory.
@@ -115,17 +143,16 @@ whatever arguments you've provided when the user clicks on it.
 <ul>
 The extremely basic API is initialized on import
 <pre>import jumpy</pre>
-defining a global object <code>pms</code> (i.e. the current xmb folder) with the following 2 methods:
+defining a global object <kbd>pms</kbd> (i.e. the current xmb folder) with the following methods:
 <br/><br/>
-<li><b>pms.addItem</b></li>
-<pre>pms.addItem(type, name, cmd, thumb)</pre>
-or
-<pre>pms.addItem(type, name, [cmd, argv1, argv2, ...], thumb)</pre>
+<li><kbd>pms.addItem</kbd><code>(type, name, cmd, thumb)</code></li>
+or<br/>
+<kbd>pms.addItem</kbd><code>(type, name, [cmd, argv1, argv2, ...], thumb)</code><br/><br/>
 where
 <ul>
 <li><code>type</code> is one of these constants:
 <pre>
-# media items           # folder items
+<i class="comment"># media items           # folder items</i>
 PMS_AUDIO               PMS_FOLDER
 PMS_IMAGE               PMS_UNRESOLVED
 PMS_VIDEO
@@ -151,18 +178,63 @@ to be executed by python in the future.</li>
 </li>
 </ul>
 <br/>
-<li><b>pms.setPath</b></li>
-<pre>pms.setPath(path)</pre>
-where
+<li><kbd>pms.setPath</kbd><code>(path)</code></li>
 <ul>
-<li><code>path</code> is a path segment to be appended to <a href="http://docs.python.org/using/cmdline.html#environment-variables" target="_blank"><code>PYTHONPATH</code></a> when the item is executed in the future.
+<code>path</code> is a path segment to be appended to <a href="http://docs.python.org/using/cmdline.html#environment-variables" target="_blank"><code>PYTHONPATH</code></a> when the item is executed in the future.
 <code>PYTHONPATH</code> tells python where to import any uninstalled modules you may be using.
 You typically set this once at the beginning, after which any descendants will inherit it. Its value builds incrementally, and
 can be cleared to its initial value for the current folder using <code>pms.setPath(None)</code>.
-<pre>
-</pre>
-</li>
 </ul>
+<br/>
+<li><kbd>pms.setEnv</kbd><code>(name, val)</code></li>
+<ul>
+Define an environment variable to be set when the current folder or its descendants are executed in the future.
+<code>pms.setEnv(None, None)</code> will clear the current folder's user-defined variables.
+</ul>
+<br/>
+<li><kbd>pms.version</kbd><code>()</code></li>
+<ul>Get jumpy's version.
+</ul>
+<br/>
+<li><kbd>pms.getHome</kbd><code>()</code></li>
+<ul>Get jumpy's home path.
+</ul>
+<br/>
+<li><kbd>pms.getProfileDir</kbd><code>()</code></li>
+<ul>Get the PMS profile path (where confs can be read/written).
+</ul>
+<br/>
+<li><kbd>pms.getLogDir</kbd><code>()</code></li>
+<ul>Get the PMS log path (where logs can be written).
+</ul>
+<br/>
+<li><kbd>pms.getPluginJar</kbd><code>()</code></li>
+<ul>Get the path to the running <i>jumpy.jar</i>.
+</ul>
+<br/>
+<li><kbd>pms.restart</kbd><code>()</code></li>
+<ul>Restart PMS' http server.
+</ul>
+</ul>
+<br/>
+<b><a name="helloworld.py">helloworld.py</a></b>
+<ul>
+<pre>import sys, jumpy
+
+if len(sys.argv) == 1:
+	<i class="comment"># initial call, add a 'Hello' folder and exit</i>
+	print "hello"
+	pms.addItem(PMS_FOLDER, "Hello", [sys.argv[0], "hello"], "")
+
+elif sys.argv[1] == "hello":
+	<i class="comment"># user clicked on our 'Hello' folder, add some videos and exit</i>
+	print "world"
+	pms.addItem(PMS_VIDEO, "W", "w.mpg", "")
+	pms.addItem(PMS_VIDEO, "O", "o.mpg", "")
+	pms.addItem(PMS_VIDEO, "R", "r.mpg", "")
+	pms.addItem(PMS_VIDEO, "L", "l.mpg", "")
+	pms.addItem(PMS_VIDEO, "D", "d.mpg", "")
+</pre>
 </ul>
 
 <br/>

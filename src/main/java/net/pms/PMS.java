@@ -337,6 +337,8 @@ public class PMS {
 				}
 			}
 		});
+		
+		//System.setProperty("sun.net.spi.nameservice.provider.1","dns,sun");
 
 		frame.setStatusCode(0, Messages.getString("PMS.130"), "connect_no-220.png");
 		proxy = -1;
