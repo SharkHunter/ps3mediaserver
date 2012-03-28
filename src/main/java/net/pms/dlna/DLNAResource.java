@@ -249,7 +249,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	 */
 	@Deprecated
 	protected long lastRefreshTime;
-
+	
 	/**
 	 * Returns parent object, usually a folder type of resource. In the DLDI
 	 * queries, the UPNP server needs to give out the parent container where
@@ -455,7 +455,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 		}
 
 		child.setParent(this);
-
+		
 		if (getParent() != null) {
 			setDefaultRenderer(getParent().getDefaultRenderer());
 		}
@@ -747,6 +747,8 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	protected void discoverWithRenderer(RendererConfiguration renderer, int count,String searchStr) {
 		// Discovering if not already done.
 		if (!isDiscovered()) {
+			if(depthLimit()&&(renderer.isPS3()||renderer.isXBOX()))
+				LOGGER.info("Depth limit potentionally hit for "+getDisplayName());
 			discoverChildren(searchStr);
 			boolean ready = true;
 			if (renderer.isMediaParserV2() && renderer.isDLNATreeHack()) {
@@ -2173,5 +2175,22 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	public boolean lastThumb() {
 		return false;
 	}
+	
+	////////////////////////////////////////////////
+	// Shark special here
+	////////////////////////////////////////////////
+	
+	private static final int DEPTH_WARNING_LIMIT=8;
+	
+	private boolean depthLimit() {
+		DLNAResource tmp=this;
+		int depth=0;
+		while(tmp!=null) {
+			tmp=tmp.getParent();
+			depth++;
+		}
+		return (depth>DEPTH_WARNING_LIMIT);
+	}
+
 }
 
