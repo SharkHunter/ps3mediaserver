@@ -460,8 +460,8 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 			setDefaultRenderer(getParent().getDefaultRenderer());
 		}
 		
-		if(defaultRenderer!=null)
-			defaultRenderer.addFolderLimit(child);
+	/*	if(defaultRenderer!=null)
+			defaultRenderer.addFolderLimit(child);*/
 		
 
 		try {
@@ -747,8 +747,12 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	protected void discoverWithRenderer(RendererConfiguration renderer, int count,String searchStr) {
 		// Discovering if not already done.
 		if (!isDiscovered()) {
-			if(depthLimit()&&(renderer.isPS3()||renderer.isXBOX()))
-				LOGGER.info("Depth limit potentionally hit for "+getDisplayName());
+			if(depthLimit()) {
+				if(renderer.isPS3()||renderer.isXBOX())
+					LOGGER.info("Depth limit potentionally hit for "+getDisplayName());
+				if(defaultRenderer!=null)
+					defaultRenderer.addFolderLimit(this);
+			}
 			discoverChildren(searchStr);
 			boolean ready = true;
 			if (renderer.isMediaParserV2() && renderer.isDLNATreeHack()) {
@@ -2180,7 +2184,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	// Shark special here
 	////////////////////////////////////////////////
 	
-	private static final int DEPTH_WARNING_LIMIT=8;
+	private static final int DEPTH_WARNING_LIMIT=7;
 	
 	private boolean depthLimit() {
 		DLNAResource tmp=this;

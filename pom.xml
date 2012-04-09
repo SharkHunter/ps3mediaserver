@@ -31,7 +31,7 @@
 	<artifactId>pms</artifactId>
 	<name>PS3 Media Server-SHB</name>
 	<packaging>jar</packaging>
-	<version>1.52.1-SHB41</version>
+	<version>1.52.1-SHB42</version>
 	<url>http://www.ps3mediaserver.org/</url>
 	<inceptionYear>2008</inceptionYear>
 
@@ -1070,10 +1070,6 @@
 										<get src="${project.binaries-base}/extras/bin/rtmpdump.exe" dest="${project.binaries}/extras/bin/rtmpdump.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/curl.exe" dest="${project.binaries}/extras/bin/curl.exe" usetimestamp="true" />
 										<get src="${project.binaries-base}/extras/bin/youtube-dl.exe" dest="${project.binaries}/extras/bin/youtube-dl.exe" usetimestamp="true" />
-										<get src="${project.binaries-base}/extras/bin/libeay32.dll" dest="${project.binaries}/extras/bin/libeay32.dll" usetimestamp="true" />
-										<get src="${project.binaries-base}/extras/bin/libssh2.dll" dest="${project.binaries}/extras/bin/libssh2.dll" usetimestamp="true" />
-										<get src="${project.binaries-base}/extras/bin/libz-1.dll" dest="${project.binaries}/extras/bin/libz-1.dll" usetimestamp="true" />
-										<get src="${project.binaries-base}/extras/bin/ssleay32.dll" dest="${project.binaries}/extras/bin/ssleay32.dll" usetimestamp="true" />
 									</target>
 								</configuration>
 							</execution>

@@ -132,7 +132,7 @@ public class RealFile extends MapFile {
 			}
 			this.getConf().setName(name);
 		}
-		return this.getConf().getName();
+		return this.getConf().getName().replaceAll("_imdb([^_]+)_", "");
 	}
 
 	@Override
