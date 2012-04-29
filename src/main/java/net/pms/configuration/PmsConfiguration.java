@@ -2237,10 +2237,13 @@ public class PmsConfiguration {
 		return getInt(KEY_REMOTE_PORT,0);
 	}
 	
+	public boolean restart() {
+		return getBoolean("restart_pms",true);
+	}
+	
 	private String perlUrl="http://code.google.com/p/sharkhunter-shb/source/browse/trunk/ps3mediaserver/extras/perl";
 	private String pythonUrl="http://code.google.com/p/sharkhunter-shb/source/browse/trunk/ps3mediaserver/extras/Python27";		
 	
 	private void fetchScriptLangs() {
-		
 	}
 }

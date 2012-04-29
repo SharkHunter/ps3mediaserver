@@ -114,6 +114,28 @@ public class RootFolder extends DLNAResource {
 			return;
 		}
 		
+		if(configuration.restart()) {
+			addChild(new VirtualVideoAction("Restart PMS", true) {
+				// This restarts the PMS. Note that we count on
+				// the "auto kill" feature to work here
+				@Override
+				public boolean enable() {
+					String cwd = new File("").getAbsolutePath();
+					String cmd=cwd+File.separator+"PMS";
+					if(Platform.isWindows())
+						cmd=cmd+".exe";
+					if(Platform.isLinux()||Platform.isFreeBSD()||Platform.isOpenBSD())
+						cmd=cmd+".sh";
+					ProcessBuilder pb=new ProcessBuilder(cmd);
+					try {
+						pb.start();
+					} catch (IOException e) {
+					}
+					return true;
+				}
+			});
+		}
+		
 		if(configuration.getFolderLimit()) {
 			lim=new FolderLimit();
 			addChild(lim);

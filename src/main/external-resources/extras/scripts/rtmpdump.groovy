@@ -24,7 +24,7 @@ init {
 			def seenSub = false
 			def args = ''
 			def swfUrl=''
-			def force=pmsConf['rtmdump.force']
+			def force=pmsConf['rtmpdump.force']
 
 			//mencoderArgs << '-mc' << '0.1'
 			//mencoderArgs << '-channels' << '6'
