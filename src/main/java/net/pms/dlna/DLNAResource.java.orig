@@ -249,7 +249,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	 */
 	@Deprecated
 	protected long lastRefreshTime;
-
+	
 	/**
 	 * Returns parent object, usually a folder type of resource. In the DLDI
 	 * queries, the UPNP server needs to give out the parent container where
@@ -455,13 +455,13 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 		}
 
 		child.setParent(this);
-
+		
 		if (getParent() != null) {
 			setDefaultRenderer(getParent().getDefaultRenderer());
 		}
 		
-		if(defaultRenderer!=null)
-			defaultRenderer.addFolderLimit(child);
+	/*	if(defaultRenderer!=null)
+			defaultRenderer.addFolderLimit(child);*/
 		
 
 		try {
@@ -701,19 +701,11 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
                         if (count > 0) {
                                 ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(count);
 
-<<<<<<< HEAD
-                                int parallel_thread_number = 3;
-                                if (resource instanceof DVDISOFile) {
-                                        parallel_thread_number = 1; // my dvd drive is dying wih 3 parallel threads 
-                                }
-                                ThreadPoolExecutor tpe = new ThreadPoolExecutor(Math.min(count, parallel_thread_number), count, 20, TimeUnit.SECONDS, queue);
-=======
 					int parallel_thread_number = 3;
 					if (resource instanceof DVDISOFile) {
 						parallel_thread_number = 1; // my dvd drive is dying wih 3 parallel threads
 					}
 					ThreadPoolExecutor tpe = new ThreadPoolExecutor(Math.min(count, parallel_thread_number), count, 20, TimeUnit.SECONDS, queue);
->>>>>>> base/master
 
 					for (int i = start; i < start + count; i++) {
 						if (i < resource.getChildren().size()) {
@@ -755,6 +747,12 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	protected void discoverWithRenderer(RendererConfiguration renderer, int count,String searchStr) {
 		// Discovering if not already done.
 		if (!isDiscovered()) {
+			if(depthLimit()) {
+				if(renderer.isPS3()||renderer.isXBOX())
+					LOGGER.info("Depth limit potentionally hit for "+getDisplayName());
+				if(defaultRenderer!=null)
+					defaultRenderer.addFolderLimit(this);
+			}
 			discoverChildren(searchStr);
 			boolean ready = true;
 			if (renderer.isMediaParserV2() && renderer.isDLNATreeHack()) {
@@ -1428,6 +1426,7 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 						public void run() {
 							if (refCount == 1) {
 								LOGGER.info(String.format("renderer: %s, file: %s", rendererId, getSystemName()));
+								PMS.get().getFrame().setStatusLine("");
 
 								for (final ExternalListener listener : ExternalFactory.getExternalListeners()) {
 									if (listener instanceof StartStopListener) {
@@ -1457,11 +1456,16 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 		new Thread(defer, "StopPlaying Event Deferrer").start();
 	}
 
+<<<<<<< HEAD
 	public InputStream getInputStream(long low,long high,double timeseek, RendererConfiguration mediarenderer) throws IOException {
 		return null;
 	}
 	
 	/**Returns an InputStream of this DLNAResource that starts at a given time, if possible. Very useful if video chapters are being used.
+=======
+	/**
+	 * Returns an InputStream of this DLNAResource that starts at a given time, if possible. Very useful if video chapters are being used.
+>>>>>>> base/master
 	 * @param range
 	 * @param mediarenderer
 	 * @return The inputstream
@@ -2181,5 +2185,22 @@ public abstract class DLNAResource extends HTTPResource implements Cloneable, Ru
 	public boolean lastThumb() {
 		return false;
 	}
+	
+	////////////////////////////////////////////////
+	// Shark special here
+	////////////////////////////////////////////////
+	
+	private static final int DEPTH_WARNING_LIMIT=7;
+	
+	private boolean depthLimit() {
+		DLNAResource tmp=this;
+		int depth=0;
+		while(tmp!=null) {
+			tmp=tmp.getParent();
+			depth++;
+		}
+		return (depth>DEPTH_WARNING_LIMIT);
+	}
+
 }
 

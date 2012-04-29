@@ -668,6 +668,10 @@ public class PMS {
 	public File[] getFoldersConf() {
 		return getFoldersConf(null,true);
 	}
+	
+	public File[] getFoldersConf(boolean b) {
+		return getFoldersConf(null,b);
+	}
 
 	/**Restarts the server. The trigger is either a button on the main PMS window or via
 	 * an action item.

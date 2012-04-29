@@ -34,6 +34,7 @@ import java.util.Set;
 
 import net.pms.PMS;
 import net.pms.io.SystemUtils;
+import net.pms.Messages;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -111,7 +112,7 @@ public class PmsConfiguration {
 	private static final String KEY_MENCODER_ASS_SHADOW = "mencoder_ass_shadow";
 	private static final String KEY_MENCODER_AUDIO_LANGS = "mencoder_audiolangs";
 	private static final String KEY_MENCODER_AUDIO_SUB_LANGS = "mencoder_audiosublangs";
-	private static final String KEY_MENCODER_DECODE = "mencoder_decode";
+	private static final String KEY_MENCODER_CUSTOM_OPTIONS = "mencoder_decode"; // TODO (breaking change): should be renamed to e.g. mencoder_custom_options
 	private static final String KEY_MENCODER_DISABLE_SUBS = "mencoder_disablesubs";
 	private static final String KEY_MENCODER_FONT_CONFIG = "mencoder_fontconfig";
 	private static final String KEY_MENCODER_FONT = "mencoder_font";
@@ -162,7 +163,7 @@ public class PmsConfiguration {
 	private static final String KEY_SORT_METHOD = "key_sort_method";
 	private static final String KEY_SUBS_COLOR = "subs_color";
 	private static final String KEY_TEMP_FOLDER_PATH = "temp";
-	private static final String KEY_THUMBNAIL_GENERATION_ENABLED = "thumbnails"; // TODO should be renamed e.g. "generate_thumbnails" at some stage
+	private static final String KEY_THUMBNAIL_GENERATION_ENABLED = "thumbnails"; // TODO (breaking change): should be renamed to e.g. generate_thumbnails
 	private static final String KEY_THUMBNAIL_SEEK_POS = "thumbnail_seek_pos";
 	private static final String KEY_TRANSCODE_BLOCKS_MULTIPLE_CONNECTIONS = "transcode_block_multiple_connections";
 	private static final String KEY_TRANSCODE_KEEP_FIRST_CONNECTION = "transcode_keep_first_connection";
@@ -184,16 +185,7 @@ public class PmsConfiguration {
 	// the default profile name displayed on the renderer
 	private static String HOSTNAME;
 
-	private static final String DEFAULT_AVI_SYNTH_SCRIPT =
-		"#AviSynth script is now fully customisable !\n"
-		+ "#You must use the following variables (\"clip\" being the avisynth variable of the movie):\n"
-		+ "#<movie>: insert the complete DirectShowSource instruction [ clip=DirectShowSource(movie, convertfps) ]\n"
-		+ "#<sub>: insert the complete TextSub/VobSub instruction if there's any detected srt/sub/idx/ass subtitle file\n"
-		+ "#<moviefilename>: variable of the movie filename, if you want to do all this by yourself\n"
-		+ "#Be careful, the custom script MUST return the clip object\n"
-		+ "<movie>\n"
-		+ "<sub>\n"
-		+ "return clip";
+	private static String DEFAULT_AVI_SYNTH_SCRIPT;
 	private static final String BUFFER_TYPE_FILE = "file";
 	private static final int MAX_MAX_MEMORY_BUFFER_SIZE = 1000;
 	private static final char LIST_SEPARATOR = ',';
@@ -391,7 +383,17 @@ public class PmsConfiguration {
 		tempFolder = new TempFolder(getString(KEY_TEMP_FOLDER_PATH, null));
 		programPaths = createProgramPathsChain(configuration);
 		Locale.setDefault(new Locale(getLanguage()));
-		fetchScriptLangs();
+		// set DEFAULT_AVI_SYNTH_SCRIPT properly according to language
+		DEFAULT_AVI_SYNTH_SCRIPT = 
+				  Messages.getString("MEncoderAviSynth.4")
+				+ Messages.getString("MEncoderAviSynth.5")
+				+ Messages.getString("MEncoderAviSynth.6")
+				+ Messages.getString("MEncoderAviSynth.7")
+				+ Messages.getString("MEncoderAviSynth.8")
+				+ Messages.getString("MEncoderAviSynth.9")
+				+ Messages.getString("MEncoderAviSynth.10")
+				+ Messages.getString("MEncoderAviSynth.11")
+				+ Messages.getString("MEncoderAviSynth.12");
 	}
 
 	private void mergeConf(String path) throws IOException, ConfigurationException {
@@ -1154,19 +1156,41 @@ public class PmsConfiguration {
 	}
 
 	/**
+	 * @deprecated Use {@link #getMencoderCustomOptions()} instead.
+	 * <p>
 	 * Returns custom commandline options to pass on to MEncoder.
 	 * @return The custom options string.
 	 */
+	@Deprecated
 	public String getMencoderDecode() {
-		return getString(KEY_MENCODER_DECODE, "");
+		return getMencoderCustomOptions();
+	}
+
+	/**
+	 * Returns custom commandline options to pass on to MEncoder.
+	 * @return The custom options string.
+	 */
+	public String getMencoderCustomOptions() {
+		return getString(KEY_MENCODER_CUSTOM_OPTIONS, "");
+	}
+
+	/**
+	 * @deprecated Use {@link #setMencoderCustomOptions(String)} instead.
+	 * <p>
+	 * Sets custom commandline options to pass on to MEncoder.
+	 * @param value The custom options string.
+	 */
+	@Deprecated
+	public void setMencoderDecode(String value) {
+		setMencoderCustomOptions(value);
 	}
 
 	/**
 	 * Sets custom commandline options to pass on to MEncoder.
 	 * @param value The custom options string.
 	 */
-	public void setMencoderDecode(String value) {
-		configuration.setProperty(KEY_MENCODER_DECODE, value);
+	public void setMencoderCustomOptions(String value) {
+		configuration.setProperty(KEY_MENCODER_CUSTOM_OPTIONS, value);
 	}
 
 	/**
@@ -1408,7 +1432,7 @@ public class PmsConfiguration {
 	}
 
 	/**
-	 * @deprecated Use {@link #setThumbnailGenerationEnabled()} instead.
+	 * @deprecated Use {@link #setThumbnailGenerationEnabled(boolean)} instead.
 	 * <p>
 	 * Sets the thumbnail generation option.
 	 * This only determines whether a thumbnailer (e.g. dcraw, MPlayer)
@@ -1578,34 +1602,79 @@ public class PmsConfiguration {
 		configuration.setProperty(KEY_USE_CACHE, value);
 	}
 
+	/**
+	 * Set to true if PMS should pass the flag "convertfps=true" to AviSynth.
+	 *
+	 * @param value True if PMS should pass the flag.
+	 */
 	public void setAvisynthConvertFps(boolean value) {
 		configuration.setProperty(KEY_AVISYNTH_CONVERT_FPS, value);
 	}
 
+	/**
+	 * Returns true if PMS should pass the flag "convertfps=true" to AviSynth.
+	 *
+	 * @return True if PMS should pass the flag.
+	 */
 	public boolean getAvisynthConvertFps() {
 		return getBoolean(KEY_AVISYNTH_CONVERT_FPS, true);
 	}
 
+	/**
+	 * Returns the template for the AviSynth script. The script string can
+	 * contain the character "\u0001", which should be treated as the newline
+	 * separator character.
+	 *
+	 * @return The AviSynth script template.
+	 */
 	public String getAvisynthScript() {
 		return getString(KEY_AVISYNTH_SCRIPT, DEFAULT_AVI_SYNTH_SCRIPT);
 	}
 
+	/**
+	 * Sets the template for the AviSynth script. The script string may contain
+	 * the character "\u0001", which will be treated as newline character.
+	 *
+	 * @param value The AviSynth script template.
+	 */
 	public void setAvisynthScript(String value) {
 		configuration.setProperty(KEY_AVISYNTH_SCRIPT, value);
 	}
 
+	/**
+	 * Returns additional codec specific configuration options for MEncoder.
+	 *
+	 * @return The configuration options.
+	 */
 	public String getCodecSpecificConfig() {
 		return getString(KEY_CODEC_SPEC_SCRIPT, "");
 	}
 
+	/**
+	 * Sets additional codec specific configuration options for MEncoder.
+	 *
+	 * @param value The additional configuration options.
+	 */
 	public void setCodecSpecificConfig(String value) {
 		configuration.setProperty(KEY_CODEC_SPEC_SCRIPT, value);
 	}
 
+	/**
+	 * Returns the maximum size (in MB) that PMS should use for buffering
+	 * audio.
+	 *
+	 * @return The maximum buffer size.
+	 */
 	public int getMaxAudioBuffer() {
 		return getInt(KEY_MAX_AUDIO_BUFFER, 100);
 	}
 
+	/**
+	 * Returns the minimum size (in MB) that PMS should use for the buffer used
+	 * for streaming media.
+	 *
+	 * @return The minimum buffer size.
+	 */
 	public int getMinStreamBuffer() {
 		return getInt(KEY_MIN_STREAM_BUFFER, 1);
 	}

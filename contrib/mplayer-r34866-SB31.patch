@@ -1,6 +1,6 @@
 Index: configure
 ===================================================================
---- configure	(revision 34814)
+--- configure	(revision 34866)
 +++ configure	(working copy)
 @@ -565,6 +565,7 @@
    --with-install=PATH    path to a custom install program
@@ -132,7 +132,7 @@ Index: configure
  
 Index: libao2/ao_sdl.c
 ===================================================================
---- libao2/ao_sdl.c	(revision 34814)
+--- libao2/ao_sdl.c	(revision 34866)
 +++ libao2/ao_sdl.c	(working copy)
 @@ -143,7 +143,7 @@
  	mp_msg(MSGT_AO,MSGL_INFO,MSGTR_AO_SDL_INFO, rate, (channels > 1) ? "Stereo" : "Mono", af_fmt2str_short(format));
@@ -145,7 +145,7 @@ Index: libao2/ao_sdl.c
  
 Index: libvo/sdl_common.c
 ===================================================================
---- libvo/sdl_common.c	(revision 34814)
+--- libvo/sdl_common.c	(revision 34866)
 +++ libvo/sdl_common.c	(working copy)
 @@ -64,7 +64,7 @@
          if (WinID > 0) {
@@ -167,7 +167,7 @@ Index: libvo/sdl_common.c
      if (!s) {
 Index: libvo/vo_sdl.c
 ===================================================================
---- libvo/vo_sdl.c	(revision 34814)
+--- libvo/vo_sdl.c	(revision 34866)
 +++ libvo/vo_sdl.c	(working copy)
 @@ -1334,17 +1334,17 @@
      mp_msg(MSGT_VO,MSGL_DBG3, "SDL: Opening Plugin\n");
@@ -194,7 +194,7 @@ Index: libvo/vo_sdl.c
      priv->fullmode = -2;
 Index: mencoder.c
 ===================================================================
---- mencoder.c	(revision 34814)
+--- mencoder.c	(revision 34866)
 +++ mencoder.c	(working copy)
 @@ -139,6 +139,7 @@
  int benchmark=0;
@@ -204,7 +204,7 @@ Index: mencoder.c
  static float default_max_pts_correction=-1;//0.01f;
  static float max_pts_correction=0;//default_max_pts_correction;
  static float c_total=0;
-@@ -1539,11 +1540,18 @@
+@@ -1554,11 +1555,18 @@
            ((ds_tell(d_audio)-sh_audio->a_in_buffer_len)/sh_audio->audio.dwSampleSize) :
            (d_audio->block_no); // <- used for VBR audio
          a_pts=samples*(float)sh_audio->audio.dwScale/(float)sh_audio->audio.dwRate;
@@ -227,7 +227,7 @@ Index: mencoder.c
      // av = compensated (with out buffering delay) A-V diff
 Index: mp_msg.c
 ===================================================================
---- mp_msg.c	(revision 34814)
+--- mp_msg.c	(revision 34866)
 +++ mp_msg.c	(working copy)
 @@ -34,6 +34,26 @@
  /* maximum message length of mp_msg */
@@ -317,9 +317,9 @@ Index: mp_msg.c
  }
 Index: mpcommon.c
 ===================================================================
---- mpcommon.c	(revision 34814)
+--- mpcommon.c	(revision 34866)
 +++ mpcommon.c	(working copy)
-@@ -538,40 +538,46 @@
+@@ -544,40 +544,46 @@
  /// Returns a_pts
  double calc_a_pts(sh_audio_t *sh_audio, demux_stream_t *d_audio)
  {
@@ -402,7 +402,7 @@ Index: mpcommon.c
  }
 Index: mplayer.c
 ===================================================================
---- mplayer.c	(revision 34814)
+--- mplayer.c	(revision 34866)
 +++ mplayer.c	(working copy)
 @@ -145,6 +145,12 @@
  float start_volume = -1;
@@ -428,7 +428,7 @@ Index: mplayer.c
      mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_LENGTH=%.2f\n", demuxer_get_time_length(mpctx->demuxer));
      mp_msg(MSGT_IDENTIFY, MSGL_INFO, "ID_SEEKABLE=%d\n",
             mpctx->stream->seek && (!mpctx->demuxer || mpctx->demuxer->seekable));
-@@ -3025,7 +3027,15 @@
+@@ -3048,7 +3050,15 @@
          gui(GUI_SET_CONTEXT, mpctx);
          gui(GUI_SET_STATE, (void *)(filename ? GUI_PLAY : GUI_STOP));
      }
@@ -637,14 +637,14 @@ Index: osdep/alloc-win.c
 \ No newline at end of file
 Index: version.sh
 ===================================================================
---- version.sh	(revision 34814)
+--- version.sh	(revision 34866)
 +++ version.sh	(working copy)
 @@ -17,9 +17,9 @@
  version=$svn_revision
  fi
  
 -NEW_REVISION="#define VERSION \"${version}${extra}\""
-+NEW_REVISION="#define VERSION \"SB28\""
++NEW_REVISION="#define VERSION \"SB31\""
  OLD_REVISION=$(head -n 1 version.h 2> /dev/null)
 -TITLE='#define MP_TITLE "%s "VERSION" (C) 2000-2012 MPlayer Team\n"'
 +TITLE='#define MP_TITLE "%s "VERSION" (C) 2000-2012 MPlayer Team\nCustom build by SubJunk, http://www.spirton.com\n\n"'
